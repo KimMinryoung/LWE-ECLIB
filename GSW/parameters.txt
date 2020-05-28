@@ -29,4 +29,4 @@ T_s
 r_y and r_u and U
 1000	1000	16000
 sigma(stddev of noise) and degrade_bound
-1	5
+1	2.2
