@@ -27,6 +27,15 @@
     <ClInclude Include="Encrypter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Actuator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Sensor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +48,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Encrypter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Actuator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Sensor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

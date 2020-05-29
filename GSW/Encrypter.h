@@ -11,7 +11,6 @@ typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu
 typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, 1> VectorXu;
 typedef Eigen::Matrix<unsigned __int64, 1, Eigen::Dynamic> RowVectorXu;
 typedef Eigen::Matrix<double, Eigen::Dynamic, 1> VectorXd;
-typedef Eigen::Matrix<double, 2, 1> Vector2d;
 class Encrypter {
 private:
 	RowVectorXu secretKey;
