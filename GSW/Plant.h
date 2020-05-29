@@ -20,9 +20,10 @@ private:
 	MatrixXd xu;
 
 public:
-	Plant();
+	Plant(EncryptedController* controller, Sensor* sensor);
 	void GetActuatorSignal(MatrixXd u);
 	void SendOutputToSensor();
+	void ControlLoop();
 	MatrixXd MergeByRow(MatrixXd a, MatrixXd b);
 	MatrixXd Substraction(MatrixXd mtx_left, MatrixXd mtx_right);
 };

@@ -1,4 +1,5 @@
 #pragma once
+class Actuator;
 #include <Eigen/Dense>
 typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
 #include <chrono>
@@ -7,6 +8,7 @@ using namespace std::chrono;
 class EncryptedController {
 
 private:
+	Actuator* actuator;
 	MatrixXu encm_FGR;
 	MatrixXu encm_HJ;
 	MatrixXu enc_xy;
@@ -22,7 +24,7 @@ private:
 public:
 	duration<double> time_span;
 	MatrixXu enc_x;
-	EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq);
+	EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq, Actuator* actuator);
 	MatrixXu GetOutput(MatrixXu enc_y);
 	void UpdateState(MatrixXu enc_u_prime);
 	MatrixXu MergeByRow(MatrixXu a, MatrixXu b);

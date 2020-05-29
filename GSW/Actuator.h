@@ -1,13 +1,15 @@
 #pragma once
-#include "Encrypter.h"
-#include "EncryptedController.h"
-#include "Plant.h"
+class Encrypter;
+#include "EncryptedController.h";
+class Plant;
 class Actuator {
 private:
 	Plant * plant;
 	EncryptedController* controller;
 	Encrypter* encdec;
 public:
-	Actuator(Plant* plant);
+	Actuator(Encrypter* encdec);
+	Actuator(Plant* plant, Encrypter* encdec);
+	void SetPlant(Plant* plant);
 	void GetControllerOutput(MatrixXu enc_u);
 };

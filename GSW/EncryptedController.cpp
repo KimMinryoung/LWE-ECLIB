@@ -1,14 +1,16 @@
 #include "stdafx.h"
 
+#include "Actuator.h"
 #include "EncryptedController.h"
 
-EncryptedController::EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq) {
+EncryptedController::EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq, Actuator* actuator) {
 	this->encm_FGR = encm_FGR;
 	this->encm_HJ = encm_HJ;
 	this->enc_x = enc_x_init;
 	this->logq = logq;
 	q_ = pow(2, logq) - 1;
 	d = ceil((double)logq / nu);
+	this->actuator = actuator;
 }
 
 MatrixXu EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send u to plant
@@ -16,6 +18,7 @@ MatrixXu EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send 
 	enc_xy = MergeByRow(enc_x, enc_y);
 	MatrixXu split_enc_xy = SplitMtx(enc_xy);
 	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);  // controller output
+	actuator->GetControllerOutput(enc_u);
 	return enc_u;
 }
 void EncryptedController::UpdateState(MatrixXu enc_u_prime) { // enc_u_prime: rearrived version of output u(has the same scale with signal y)

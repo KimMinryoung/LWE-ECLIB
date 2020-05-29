@@ -6,6 +6,6 @@ private:
 	EncryptedController * controller;
 	Encrypter* encrypter;
 public:
-	Sensor(EncryptedController* controller);
+	Sensor(EncryptedController* controller, Encrypter* encrypter);
 	void GetPlantOutput(MatrixXd y);
 };
