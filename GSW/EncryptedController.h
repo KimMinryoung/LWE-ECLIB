@@ -29,7 +29,7 @@ public:
 	MatrixXu enc_x;
 	EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq);
 	MatrixXu GetOutput(MatrixXu enc_y);
-	MatrixXu UpdateState(MatrixXu enc_y, MatrixXu enc_u_prime);
+	MatrixXu UpdateState(MatrixXu enc_u_prime);
 	MatrixXu MergeByRow(MatrixXu a, MatrixXu b);
 	MatrixXu MultMxM(MatrixXu encm, MatrixXu split_enc);
 	MatrixXu SplitMtx(MatrixXu m);

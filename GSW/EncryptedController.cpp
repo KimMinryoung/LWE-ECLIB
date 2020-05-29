@@ -18,7 +18,7 @@ MatrixXu EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send 
 	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);  // controller output
 	return enc_u;
 }
-MatrixXu EncryptedController::UpdateState(MatrixXu enc_y, MatrixXu enc_u_prime) { // enc_u_prime: rearrived version of output u(has the same scale with signal y)
+MatrixXu EncryptedController::UpdateState(MatrixXu enc_u_prime) { // enc_u_prime: rearrived version of output u(has the same scale with signal y)
 	MatrixXu enc_xyu = MergeByRow(enc_xy, enc_u_prime);
 	MatrixXu split_enc_xyu = SplitMtx(enc_xyu);
 	enc_x = MultMxM(encm_FGR, split_enc_xyu); // controller state
