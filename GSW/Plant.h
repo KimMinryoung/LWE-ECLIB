@@ -17,11 +17,13 @@ private:
 	double T_s;
 	int r_u_inverse;
 
+	int step = 0;
 	MatrixXd xu;
 
 public:
 	Plant(EncryptedController* controller, Sensor* sensor);
 	void GetActuatorSignal(MatrixXd u);
+	//void UpdateState(MatrixXd u);
 	void SendOutputToSensor();
 	void ControlLoop();
 	MatrixXd MergeByRow(MatrixXd a, MatrixXd b);

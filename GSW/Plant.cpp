@@ -24,21 +24,26 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 }
 void Plant::GetActuatorSignal(MatrixXd u) {
 	//cout << "GetActuatorSignal" << endl;
+	step++;
 	// fill with any plant operation
 	MatrixXd xu = MergeByRow(x, u);
 	x = AB * xu;
+	xu = MergeByRow(x, u);
 	y = CD * xu;
 	// ~~~~~~~~~~~~~~
 	//cout << "step=" << t << endl;
-	cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
-	cout << (Substraction(r, y)) << endl;
 	SendOutputToSensor();
 }
 void Plant::SendOutputToSensor() {
 	//cout << "SendOutputToSensor" << endl;
-	sensor->GetPlantOutput(Substraction(r, y));
+	if (step % 50 == 0) {
+		cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
+		cout << (Substraction(r, y)) << endl;
+	}
+	sensor->GetPlantOutput(Substraction(r,y));
 }
 void Plant::ControlLoop(){
+	step = 0;
 	SendOutputToSensor();
 	/*
 	for (int t = 0;t <= 120 / T_s;t++) {
