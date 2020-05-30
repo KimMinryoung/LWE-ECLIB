@@ -1,6 +1,8 @@
 #pragma once
 #include "EncryptedController.h"
 #include "Sensor.h"
+#include <chrono>
+using namespace std::chrono;
 class Plant {
 
 private:
@@ -18,6 +20,8 @@ private:
 	int r_u_inverse;
 
 	int step = 0;
+	double time_lapsed = 0;
+	high_resolution_clock::time_point lastTime;
 	MatrixXd xu;
 
 public:

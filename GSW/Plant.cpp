@@ -1,4 +1,6 @@
 #include "Plant.h"
+typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
+#include <chrono>
 
 Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	this->controller = controller;
@@ -30,9 +32,6 @@ void Plant::GetActuatorSignal(MatrixXd u) {
 	x = AB * xu;
 	xu = MergeByRow(x, u);
 	y = CD * xu;
-	// ~~~~~~~~~~~~~~
-	//cout << "step=" << t << endl;
-	SendOutputToSensor();
 }
 void Plant::SendOutputToSensor() {
 	//cout << "SendOutputToSensor" << endl;
@@ -44,19 +43,15 @@ void Plant::SendOutputToSensor() {
 }
 void Plant::ControlLoop(){
 	step = 0;
-	SendOutputToSensor();
-	/*
-	for (int t = 0;t <= 120 / T_s;t++) {
-		GetOutput();
-		if (t % 50 == 10) {
-			cout << "step=" << t << endl;
-			cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
-			cout << (Substraction(r, y)) << endl;
+	while (true) {
+		SendOutputToSensor();
+		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
+		lastTime = high_resolution_clock::now();
+		if (time_lapsed > T_s) {
+			time_lapsed -= T_s;
+			SendOutputToSensor();
 		}
-		u = encdec->Dec_u(controller->GetOutput(encdec->Enc(Substraction(r, y), true)));
-		controller->UpdateState(encdec->Enc(u, true));
-		UpdateState();
-	}*/
+	}
 }
 
 MatrixXd Plant::MergeByRow(MatrixXd a, MatrixXd b) {
