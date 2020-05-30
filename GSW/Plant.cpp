@@ -23,7 +23,7 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	T_s = 0.1;
 }
 void Plant::GetActuatorSignal(MatrixXd u) {
-	cout << "GetActuatorSignal" << endl;
+	//cout << "GetActuatorSignal" << endl;
 	// fill with any plant operation
 	MatrixXd xu = MergeByRow(x, u);
 	x = AB * xu;
@@ -32,11 +32,10 @@ void Plant::GetActuatorSignal(MatrixXd u) {
 	//cout << "step=" << t << endl;
 	cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
 	cout << (Substraction(r, y)) << endl;
-
 	SendOutputToSensor();
 }
 void Plant::SendOutputToSensor() {
-	cout << "SendOutputToSensor" << endl;
+	//cout << "SendOutputToSensor" << endl;
 	sensor->GetPlantOutput(Substraction(r, y));
 }
 void Plant::ControlLoop(){

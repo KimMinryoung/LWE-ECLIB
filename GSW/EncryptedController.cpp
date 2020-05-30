@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "iostream"
+using namespace std;
 #include "Actuator.h"
 #include "EncryptedController.h"
 
@@ -13,15 +15,17 @@ EncryptedController::EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, Ma
 	this->actuator = actuator;
 }
 
-MatrixXu EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send u to plant
+void EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send u to plant
+	//cout << "Controller:GetOutput" << endl;
 	startCount();
 	enc_xy = MergeByRow(enc_x, enc_y);
 	MatrixXu split_enc_xy = SplitMtx(enc_xy);
 	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);  // controller output
 	actuator->GetControllerOutput(enc_u);
-	return enc_u;
+	//return enc_u;
 }
 void EncryptedController::UpdateState(MatrixXu enc_u_prime) { // enc_u_prime: rearrived version of output u(has the same scale with signal y)
+	//cout << "UpdateState" << endl;
 	MatrixXu enc_xyu = MergeByRow(enc_xy, enc_u_prime);
 	MatrixXu split_enc_xyu = SplitMtx(enc_xyu);
 	enc_x = MultMxM(encm_FGR, split_enc_xyu); // controller state
@@ -77,4 +81,15 @@ void EncryptedController::startCount() {
 }
 void EncryptedController::calculateInterval() {
 	time_span = duration_cast<duration<double>>(high_resolution_clock::now() - beginTime);
+}
+double EncryptedController::TimeTest() {
+	startCount();
+	
+	MatrixXu split_enc_xy = MatrixXu::Random(encm_HJ.cols(), 1);
+	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);
+	MatrixXu split_enc_xyu = MatrixXu::Random(encm_FGR.cols(), 1);
+	enc_x = MultMxM(encm_FGR, split_enc_xyu); // controller state
+
+	calculateInterval();
+	return time_span.count();
 }

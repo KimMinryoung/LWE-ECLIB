@@ -11,5 +11,6 @@ public:
 	Actuator(Encrypter* encdec);
 	Actuator(Plant* plant, Encrypter* encdec);
 	void SetPlant(Plant* plant);
+	void SetController(EncryptedController* controller);
 	void GetControllerOutput(MatrixXu enc_u);
 };

@@ -22,12 +22,13 @@ private:
 	void calculateInterval();
 
 public:
-	duration<double> time_span;
-	MatrixXu enc_x;
 	EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq, Actuator* actuator);
-	MatrixXu GetOutput(MatrixXu enc_y);
+	void GetOutput(MatrixXu enc_y);
 	void UpdateState(MatrixXu enc_u_prime);
 	MatrixXu MergeByRow(MatrixXu a, MatrixXu b);
 	MatrixXu MultMxM(MatrixXu encm, MatrixXu split_enc);
 	MatrixXu SplitMtx(MatrixXu m);
+	duration<double> time_span;
+	MatrixXu enc_x;
+	double TimeTest();
 };
