@@ -22,6 +22,7 @@ private:
 	int step = 0;
 	double time_lapsed = 0;
 	high_resolution_clock::time_point lastTime;
+	bool receivedContSignal;
 	MatrixXd xu;
 
 public:
@@ -32,4 +33,5 @@ public:
 	void ControlLoop();
 	MatrixXd MergeByRow(MatrixXd a, MatrixXd b);
 	MatrixXd Substraction(MatrixXd mtx_left, MatrixXd mtx_right);
+	double ControlTimeTest();
 };

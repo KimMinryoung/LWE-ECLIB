@@ -66,20 +66,3 @@ MatrixXu EncryptedController::SplitMtx(MatrixXu m) {
 	}
 	return result;
 }
-void EncryptedController::startCount() {
-	beginTime = high_resolution_clock::now();
-}
-void EncryptedController::calculateInterval() {
-	time_span = duration_cast<duration<double>>(high_resolution_clock::now() - beginTime);
-}
-double EncryptedController::TimeTest() {
-	startCount();
-	
-	MatrixXu split_enc_xy = MatrixXu::Random(encm_HJ.cols(), 1);
-	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);
-	MatrixXu split_enc_xyu = MatrixXu::Random(encm_FGR.cols(), 1);
-	enc_x = MultMxM(encm_FGR, split_enc_xyu); // controller state
-
-	calculateInterval();
-	return time_span.count();
-}

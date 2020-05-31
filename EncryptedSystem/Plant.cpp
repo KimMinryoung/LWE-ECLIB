@@ -43,6 +43,7 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 }
 void Plant::GetActuatorSignal(MatrixXd u) {
 	step++;
+	receivedContSignal = true;
 
 	// Fill with any plant operation
 	MatrixXd xu = MergeByRow(x, u);
@@ -53,7 +54,7 @@ void Plant::GetActuatorSignal(MatrixXd u) {
 
 }
 void Plant::SendOutputToSensor() {
-	if (step % 50 == 0) {
+	if (step % 50 == 1) {
 		cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
 		cout << (Substraction(r, y)) << endl;
 	}
@@ -61,8 +62,10 @@ void Plant::SendOutputToSensor() {
 }
 void Plant::ControlLoop(){
 	step = 0;
+	SendOutputToSensor();
+	time_lapsed = 0;
+	lastTime = high_resolution_clock::now();
 	while (true) {
-		SendOutputToSensor();
 		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
 		lastTime = high_resolution_clock::now();
 		if (time_lapsed > T_s) {
@@ -88,4 +91,17 @@ MatrixXd Plant::Substraction(MatrixXd mtx_left, MatrixXd mtx_right) {
 		for (int j = 0;j < mtx_left.cols();j++)
 			result(i, j) = mtx_left(i, j) - mtx_right(i, j);
 	return result;
+}
+double Plant::ControlTimeTest() {
+	receivedContSignal = false;
+	time_lapsed = 0;
+	lastTime = high_resolution_clock::now();
+	SendOutputToSensor();
+	while (true) {
+		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
+		lastTime = high_resolution_clock::now();
+		if (receivedContSignal) {
+			return time_lapsed;
+		}
+	}
 }

@@ -2,8 +2,6 @@
 class Actuator;
 #include <Eigen/Dense>
 typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
-#include <chrono>
-using namespace std::chrono;
 
 class EncryptedController {
 
@@ -17,10 +15,6 @@ private:
 	const int nu = 16;
 	const unsigned __int64 nu_ = pow(2, nu) - 1;
 	int d = logq / nu;
-	high_resolution_clock::time_point beginTime;
-	duration<double> time_span;
-	void startCount();
-	void calculateInterval();
 
 public:
 	EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, MatrixXu enc_x_init, int logq, Actuator* actuator);
@@ -30,5 +24,4 @@ public:
 	MatrixXu MultMxM(MatrixXu encm, MatrixXu split_enc);
 	MatrixXu SplitMtx(MatrixXu m);
 	MatrixXu enc_x;
-	double TimeTest();
 };
