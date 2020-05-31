@@ -16,12 +16,10 @@ EncryptedController::EncryptedController(MatrixXu encm_FGR, MatrixXu encm_HJ, Ma
 }
 
 void EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send u to plant
-	//cout << "Controller:GetOutput" << endl;
 	enc_xy = MergeByRow(enc_x, enc_y);
 	MatrixXu split_enc_xy = SplitMtx(enc_xy);
 	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);  // controller output
 	actuator->GetControllerOutput(enc_u);
-	//return enc_u;
 }
 void EncryptedController::UpdateState(MatrixXu enc_u_prime) { // enc_u_prime: rearrived version of output u(has the same scale with signal y)
 	MatrixXu enc_xyu = MergeByRow(enc_xy, enc_u_prime);
@@ -47,11 +45,6 @@ MatrixXu EncryptedController::MultMxM(MatrixXu encm, MatrixXu split_enc) {
 	for (int i = 0; i < size_i;i++)
 		for (int j = 0;j < size_j;j++)
 			result(i, j) &= q_;
-
-	/*for (int i = 0; i < size_i;i++)
-	for (int j = 0;j < size_j;j++)
-	for (int k = 0;k < size_k;k++)
-	result(i, j) = (result(i, j) + encm(i, k) * split_enc(k, j)) & q_;*/
 	return result;
 }
 MatrixXu EncryptedController::SplitMtx(MatrixXu m) {

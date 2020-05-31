@@ -18,6 +18,7 @@ private:
 	const unsigned __int64 nu_ = pow(2, nu) - 1;
 	int d = logq / nu;
 	high_resolution_clock::time_point beginTime;
+	duration<double> time_span;
 	void startCount();
 	void calculateInterval();
 
@@ -28,7 +29,6 @@ public:
 	MatrixXu MergeByRow(MatrixXu a, MatrixXu b);
 	MatrixXu MultMxM(MatrixXu encm, MatrixXu split_enc);
 	MatrixXu SplitMtx(MatrixXu m);
-	duration<double> time_span;
 	MatrixXu enc_x;
 	double TimeTest();
 };

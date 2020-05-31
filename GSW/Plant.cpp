@@ -5,6 +5,8 @@ typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu
 Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	this->controller = controller;
 	this->sensor = sensor;
+
+	// Parameters of any form of plant
 	MatrixXd AB_(3, 4);
 	AB_ << 0.9048, 0.08611, 0.003306, 0.0001222,
 		0, 0.8187, 0.05636, 0.003428,
@@ -23,18 +25,34 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	r_ << 25.75;
 	r = r_;
 	T_s = 0.1;
+	// ~~~~~~~~~~
+
+	cout << ">> plant <<" << endl;
+	cout << "x+ = AB * xy" << endl;
+	cout << "y = CD * xy" << endl;
+	printf("plant matrix AB=\n");
+	cout << AB << endl;
+	printf("plant matrix CD=\n");
+	cout << CD << endl;
+	printf("plant initial state x=\n");
+	cout << x << endl;
+	printf("plant initial output y=\n");
+	cout << y << endl;
+	printf("reference signal r=\n");
+	cout << r << endl;
 }
 void Plant::GetActuatorSignal(MatrixXd u) {
-	//cout << "GetActuatorSignal" << endl;
 	step++;
-	// fill with any plant operation
+
+	// Fill with any plant operation
 	MatrixXd xu = MergeByRow(x, u);
 	x = AB * xu;
 	xu = MergeByRow(x, u);
 	y = CD * xu;
+	// ~~~~~~~~~~~
+
 }
 void Plant::SendOutputToSensor() {
-	//cout << "SendOutputToSensor" << endl;
 	if (step % 50 == 0) {
 		cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
 		cout << (Substraction(r, y)) << endl;
