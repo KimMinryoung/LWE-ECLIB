@@ -8,7 +8,7 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	srand(time(NULL));
 
 	if (n == -1)
-		this->n = 50; // temporal ciphertext dimension for speed measuring
+		this->n = 100; // temporal ciphertext dimension for speed measuring
 	else
 		this->n = n;
 	this->n_ = this->n + 1;
@@ -77,7 +77,7 @@ void Encrypter::PrintSecurityLevel() {
 	cout << "security level: rop=2^" << security_level << endl;
 	printf("---------------\n");
 }
-MatrixXd Encrypter::Dec(MatrixXu c, int scaling, bool signal) {
+MatrixXd Encrypter::Dec(MatrixXu c, unsigned __int64 scaling, bool signal) {
 	int l = c.rows() / n_;
 	MatrixXd y(l, c.cols());
 
@@ -97,15 +97,15 @@ MatrixXd Encrypter::Dec(MatrixXu c, int scaling, bool signal) {
 	}
 	return y;
 }
-// Decrypt non-scaled matrix(not used for control system)
+// Decrypt a non-scaled matrix(not used for control system)
 MatrixXd Encrypter::Dec(MatrixXu c) {
 	return Dec(c, 1, false);
 }
-// Decrypt control signal and auto-rescale
+// Decrypt controller output and auto-rescale
 MatrixXd Encrypter::Dec_u(MatrixXu c) {
 	return Dec(c, s_1_inverse*s_2_inverse, true);
 }
-// Decrypt control state and auto-rescale
+// Decrypt controller state and auto-rescale
 MatrixXd Encrypter::Dec_state(MatrixXu x) {
 	return Dec(x, s_1_inverse, true);
 }
@@ -132,9 +132,8 @@ MatrixXu Encrypter::Enc(MatrixXd m, bool signal) {
 		for (int j_c = 0; j_c < m.cols(); j_c++) {
 			double _noise = normal_random(generator); // inject _noise ~ N(0, sigma)
 			int noise = round(_noise);
-			//int noise = min((sigma - 1) / 2, max((1 - sigma) / 2, round(_noise))); // noise=-1,0,1
 			unsigned __int64 e = q + noise; // To make noise positive number, Add q
-											// b=(e+m-a*sk) mod q
+			// b=(e+m-a*sk) mod q
 			signed __int64 quantized_m = (signed __int64)round(m(i_m, j_c) * r_y_inverse);
 			if (signal) { // If m is signal, scale by L
 				signed __int64 scaled_m = (signed __int64)(r_dividedby_L * (double)quantized_m);
@@ -183,15 +182,15 @@ MatrixXu Encrypter::Encm(MatrixXd m) {
 	}
 	return c;
 }
-MatrixXu Encrypter::SplitMtx(MatrixXu m) {
-	MatrixXu result(m.rows() * d, m.cols());
-	MatrixXu c_temp(m.rows(), m.cols());
-	c_temp = m;
+MatrixXu Encrypter::SplitMtx(MatrixXu c) {
+	MatrixXu result(c.rows() * d, c.cols());
+	MatrixXu c_temp(c.rows(), c.cols());
+	c_temp = c;
 
 	for (int piece = 0; piece < d; piece++) {
-		for (int i = 0; i < m.rows(); i++) {
-			for (int j = 0; j < m.cols(); j++) {
-				result(piece * m.rows() + i, j) = c_temp(i, j) & nu_;
+		for (int i = 0; i < c.rows(); i++) {
+			for (int j = 0; j < c.cols(); j++) {
+				result(piece * c.rows() + i, j) = c_temp(i, j) & nu_;
 				c_temp(i, j) = c_temp(i, j) >> (nu);
 			}
 		}
@@ -203,19 +202,11 @@ MatrixXu Encrypter::MultMxM(MatrixXu encm, MatrixXu split_enc) {
 	int size_k = split_enc.rows();
 	int size_j = split_enc.cols();
 	MatrixXu result(size_i, size_j);
-	//MatrixXu result = MatrixXu::Zero(size_i, size_j);
 	result.noalias() = encm * split_enc;
 
 	for (int i = 0; i < size_i;i++)
 		for (int j = 0; j < size_j; j++)
 			result(i, j) &= q_;
-
-	/*for (int i = 0; i < size_i;i++)
-	for (int j = 0;j < size_j;j++)
-	for (int k = 0; k < size_k; k++) {
-	result(i, j) = (result(i, j) + encm(i, k) * split_enc(k, j)) & q_;
-	cout << k<<":"<<result(i, j) << endl;
-	}*/
 
 	return result;
 }
@@ -227,10 +218,6 @@ VectorXu Encrypter::MultMxV(MatrixXu m, RowVectorXu vec) {
 	y = (vec * m);
 	for (int i = 0;i < size_ii;i++)
 		y(i) &= q_;
-	/*for (int i = 0; i < size_ii;i++)
-	for (int k = 0;k < size_i;k++)
-	y(i) = (y(i) + vec(k) * m(k, i)) & q_;
-	*/
 	return y;
 }
 MatrixXu Encrypter::ScalarMult(unsigned __int64 scalar, MatrixXu c) {

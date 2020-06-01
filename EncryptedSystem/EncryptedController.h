@@ -7,10 +7,14 @@ class EncryptedController {
 
 private:
 	Actuator* actuator;
-	MatrixXu encm_FGR;
-	MatrixXu encm_HJ;
+
+	// >>controller<<
+	// x+ = FGR * xyu
+	// u = HJ * xy
+	MatrixXu encm_FGR; // encrypted matrix FGR
+	MatrixXu encm_HJ; // encrypted matrix HJ
 	MatrixXu enc_xy;
-	int logq = 48;
+	int logq = 48; // default!!??!?!?!?
 	unsigned __int64 q_ = pow(2, logq) - 1;
 	const int nu = 16;
 	const unsigned __int64 nu_ = pow(2, nu) - 1;

@@ -6,7 +6,7 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	this->controller = controller;
 	this->sensor = sensor;
 
-	// Parameters of any form of plant
+	// Initialize parameters of any form of plant
 	MatrixXd AB_(3, 4);
 	AB_ << 0.9048, 0.08611, 0.003306, 0.0001222,
 		0, 0.8187, 0.05636, 0.003428,
@@ -18,6 +18,7 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	MatrixXd x_(3, 1);
 	x_ << 100, 70, 50;
 	x = x_;
+	// ~~~~~~~~~~
 	MatrixXd y_(1, 1);
 	y_ << 0;
 	y = y_;
@@ -28,12 +29,14 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	// ~~~~~~~~~~
 
 	cout << ">> plant <<" << endl;
+	// You can print plant form or skip
 	cout << "x+ = AB * xy" << endl;
 	cout << "y = CD * xy" << endl;
 	printf("plant matrix AB=\n");
 	cout << AB << endl;
 	printf("plant matrix CD=\n");
 	cout << CD << endl;
+	// ~~~~~~~~~~
 	printf("plant initial state x=\n");
 	cout << x << endl;
 	printf("plant initial output y=\n");
@@ -60,6 +63,7 @@ void Plant::SendOutputToSensor() {
 	}
 	sensor->GetPlantOutput(Substraction(r,y));
 }
+
 void Plant::ControlLoop(){
 	step = 0;
 	SendOutputToSensor();
@@ -71,6 +75,20 @@ void Plant::ControlLoop(){
 		if (time_lapsed > T_s) {
 			time_lapsed -= T_s;
 			SendOutputToSensor();
+		}
+	}
+}
+
+double Plant::ControlTimeTest() {
+	receivedContSignal = false;
+	time_lapsed = 0;
+	lastTime = high_resolution_clock::now();
+	SendOutputToSensor();
+	while (true) {
+		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
+		lastTime = high_resolution_clock::now();
+		if (receivedContSignal) {
+			return time_lapsed;
 		}
 	}
 }
@@ -91,17 +109,4 @@ MatrixXd Plant::Substraction(MatrixXd mtx_left, MatrixXd mtx_right) {
 		for (int j = 0;j < mtx_left.cols();j++)
 			result(i, j) = mtx_left(i, j) - mtx_right(i, j);
 	return result;
-}
-double Plant::ControlTimeTest() {
-	receivedContSignal = false;
-	time_lapsed = 0;
-	lastTime = high_resolution_clock::now();
-	SendOutputToSensor();
-	while (true) {
-		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
-		lastTime = high_resolution_clock::now();
-		if (receivedContSignal) {
-			return time_lapsed;
-		}
-	}
 }
