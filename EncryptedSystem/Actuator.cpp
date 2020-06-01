@@ -16,7 +16,6 @@ void Actuator::SetController(EncryptedController* controller) {
 	this->controller = controller;
 }
 void Actuator::GetControllerOutput(MatrixXu enc_u) {
-	//cout << "GetControllerOutput" << endl;
 	MatrixXd u = encdec->Dec_u(enc_u);
 	MatrixXu enc_u_prime = encdec->Enc(u, true);
 	controller->UpdateState(enc_u_prime);

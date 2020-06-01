@@ -21,7 +21,7 @@ void EncryptedController::GetOutput(MatrixXu enc_y) { // calculate and send u to
 	MatrixXu enc_u = MultMxM(encm_HJ, split_enc_xy);  // controller output
 	actuator->GetControllerOutput(enc_u);
 }
-void EncryptedController::UpdateState(MatrixXu enc_u_prime) { // enc_u_prime: rearrived version of output u(has the same scale with signal y)
+void EncryptedController::UpdateState(MatrixXu enc_u_prime) {
 	MatrixXu enc_xyu = MergeByRow(enc_xy, enc_u_prime);
 	MatrixXu split_enc_xyu = SplitMtx(enc_xyu);
 	enc_x = MultMxM(encm_FGR, split_enc_xyu); // controller state
@@ -47,19 +47,19 @@ MatrixXu EncryptedController::MultMxM(MatrixXu encm, MatrixXu split_enc) {
 			result(i, j) &= q_;
 	return result;
 }
-MatrixXu EncryptedController::SplitMtx(MatrixXu m) {
-	MatrixXu result(m.rows() * d, m.cols());
-	MatrixXu c_temp(m.rows(), m.cols());
-	for (int i = 0;i < m.rows(); i++) {
-		for (int j = 0;j < m.cols();j++) {
+MatrixXu EncryptedController::SplitMtx(MatrixXu c) {
+	MatrixXu result(c.rows() * d, c.cols());
+	MatrixXu c_temp(c.rows(), c.cols());
+	for (int i = 0;i < c.rows(); i++) {
+		for (int j = 0;j < c.cols();j++) {
 			c_temp(i, j) = m(i, j);
 		}
 	}
 
 	for (int piece = 0;piece < d;piece++) {
-		for (int i = 0;i < m.rows();i++) {
-			for (int j = 0;j < m.cols();j++) {
-				result(piece * m.rows() + i, j) = c_temp(i, j) & nu_;
+		for (int i = 0;i < c.rows();i++) {
+			for (int j = 0;j < c.cols();j++) {
+				result(piece * c.rows() + i, j) = c_temp(i, j) & nu_;
 				c_temp(i, j) = c_temp(i, j) >> (nu);
 			}
 		}

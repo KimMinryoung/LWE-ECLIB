@@ -182,17 +182,22 @@ MatrixXu Encrypter::Encm(MatrixXd m) {
 	}
 	return c;
 }
-MatrixXu Encrypter::SplitMtx(MatrixXu c) {
-	MatrixXu result(c.rows() * d, c.cols());
-	MatrixXu c_temp(c.rows(), c.cols());
-	c_temp = c;
-
-	for (int piece = 0; piece < d; piece++) {
-		for (int i = 0; i < c.rows(); i++) {
-			for (int j = 0; j < c.cols(); j++) {
-				result(piece * c.rows() + i, j) = c_temp(i, j) & nu_;
-				c_temp(i, j) = c_temp(i, j) >> (nu);
-			}
+MatrixXu Encrypter::Add(MatrixXu c1, MatrixXu c2) {
+	MatrixXu result(c1.rows(), c1.cols());
+	result = c1 + c2;
+	for (int i = 0; i < c1.rows(); i++) {
+		for (int j = 0; j < c1.cols(); j++) {
+			result(i, j) = result(i, j) & q_;
+		}
+	}
+	return result;
+}
+MatrixXu Encrypter::ScalarMult(unsigned __int64 scalar, MatrixXu c) {
+	MatrixXu result(c.rows(), c.cols());
+	result = scalar * c;
+	for (int i = 0; i < c.rows(); i++) {
+		for (int j = 0; j < c.cols(); j++) {
+			result(i, j) = result(i, j) & q_;
 		}
 	}
 	return result;
@@ -220,22 +225,17 @@ VectorXu Encrypter::MultMxV(MatrixXu m, RowVectorXu vec) {
 		y(i) &= q_;
 	return y;
 }
-MatrixXu Encrypter::ScalarMult(unsigned __int64 scalar, MatrixXu c) {
-	MatrixXu result(c.rows(), c.cols());
-	result = scalar * c;
-	for (int i = 0; i < c.rows(); i++) {
-		for (int j = 0; j < c.cols(); j++) {
-			result(i, j) = result(i, j) & q_;
-		}
-	}
-	return result;
-}
-MatrixXu Encrypter::Add(MatrixXu c1, MatrixXu c2) {
-	MatrixXu result(c1.rows(), c1.cols());
-	result = c1 + c2;
-	for (int i = 0; i < c1.rows(); i++) {
-		for (int j = 0; j < c1.cols(); j++) {
-			result(i, j) = result(i, j) & q_;
+MatrixXu Encrypter::SplitMtx(MatrixXu c) {
+	MatrixXu result(c.rows() * d, c.cols());
+	MatrixXu c_temp(c.rows(), c.cols());
+	c_temp = c;
+
+	for (int piece = 0; piece < d; piece++) {
+		for (int i = 0; i < c.rows(); i++) {
+			for (int j = 0; j < c.cols(); j++) {
+				result(piece * c.rows() + i, j) = c_temp(i, j) & nu_;
+				c_temp(i, j) = c_temp(i, j) >> (nu);
+			}
 		}
 	}
 	return result;

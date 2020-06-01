@@ -44,6 +44,11 @@ Plant::Plant(EncryptedController* controller, Sensor* sensor) {
 	printf("reference signal r=\n");
 	cout << r << endl;
 }
+
+//----------------------------------------------------------------------------------
+//   PLANT OPERATION
+//----------------------------------------------------------------------------------
+
 void Plant::GetActuatorSignal(MatrixXd u) {
 	step++;
 	receivedContSignal = true;
@@ -92,6 +97,10 @@ double Plant::ControlTimeTest() {
 		}
 	}
 }
+
+//----------------------------------------------------------------------------------
+//   TOOL FUNCTIONS FOR PLANT OPERATION
+//----------------------------------------------------------------------------------
 
 MatrixXd Plant::MergeByRow(MatrixXd a, MatrixXd b) {
 	MatrixXd result(a.rows() + b.rows(), a.cols());
