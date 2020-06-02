@@ -6,7 +6,6 @@ using namespace std::chrono;
 class Plant {
 
 private:
-	EncryptedController * controller;
 	Sensor* sensor;
 
 	// put any form of plant parameters in here
@@ -25,7 +24,7 @@ private:
 	bool receivedContSignal; // set true if received controller signal from actuator
 
 public:
-	Plant(EncryptedController* controller, Sensor* sensor);
+	Plant(Sensor* sensor);
 	//----------------------------------------------------------------------------------
 	//   PLANT OPERATION
 	//----------------------------------------------------------------------------------

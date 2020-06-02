@@ -77,19 +77,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\bichon\Documents\libraries\eigen-3.3.7;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\bichon\Documents\libraries\eigen-3.3.7;C:\Users\user\Documents\libraries\eigen-3.3.7;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\user\Documents\libraries\eigen-3.3.7;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\bichon\Documents\libraries\eigen-3.3.7;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\bichon\Documents\libraries\eigen-3.3.7;C:\Users\user\Documents\libraries\eigen-3.3.7;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\user\Documents\libraries\eigen-3.3.7;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

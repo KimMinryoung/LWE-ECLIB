@@ -2,8 +2,7 @@
 typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
 #include <chrono>
 
-Plant::Plant(EncryptedController* controller, Sensor* sensor) {
-	this->controller = controller;
+Plant::Plant(Sensor* sensor) {
 	this->sensor = sensor;
 
 	// Initialize parameters of any form of plant

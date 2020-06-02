@@ -52,7 +52,7 @@ MatrixXu EncryptedController::SplitMtx(MatrixXu c) {
 	MatrixXu c_temp(c.rows(), c.cols());
 	for (int i = 0;i < c.rows(); i++) {
 		for (int j = 0;j < c.cols();j++) {
-			c_temp(i, j) = m(i, j);
+			c_temp(i, j) = c(i, j);
 		}
 	}
 

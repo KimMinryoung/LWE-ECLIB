@@ -5,7 +5,7 @@ using namespace std;
 #include <random>
 #include <time.h>
 
-#include <Eigen/Dense>
+#include "Eigen-3.3.7/Eigen/Dense"
 using Eigen::MatrixXd;
 typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
 typedef Eigen::Matrix<unsigned __int64, Eigen::Dynamic, 1> VectorXu;
