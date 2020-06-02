@@ -25,14 +25,14 @@ private:
 	unsigned __int64 s; // secret key range !!!!!!!
 
 	int r_y_inverse; // scalingÀ» encrypter°¡??
-	int L_inverse;
-	double r_dividedby_L;
-	int s_1_inverse;
-	int s_2_inverse;
-	int U;
-	int nu;
-	int d;
-	double security_level;
+	int L_inverse; // signal scaling factor, 1/L
+	double r_dividedby_L; // r/L
+	int s_1_inverse; // matrix(G, R) scaling factor, 1/s_1
+	int s_2_inverse; // matrix(H, J) scaling factor, 1/s_2
+	int U; // range size of controller output u
+	int nu; // range size of controller output u
+	int d; // base to split a ciphertext(ex: nu = 16 -> split a ciphertext by 2^16)
+	double security_level; // lambda which represents expected value of needed operations to attack(=log2(NeededOperationNumber))
 
 	unsigned __int64 q_dividedby_N; // q/N
 	unsigned __int64 nu_; // nu + 1(used for bitwise operation that substitutes modular operation)
@@ -51,6 +51,9 @@ public:
 	* @param[out] int n: proper n to satisfy time constraint
 	*/
 	int Set_n(double currentTimeSpan, double T_s);
+	/**
+	* estimate and print security level lambda decided by Encrypter parameters(q, n, sigma)
+	*/
 	void PrintSecurityLevel();
 	//----------------------------------------------------------------------------------
 	//   DECRYPTION
