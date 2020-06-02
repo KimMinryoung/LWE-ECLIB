@@ -12,8 +12,8 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	else
 		this->n = n;
 	this->n_ = this->n + 1;
-	s = 256; // secret key range
 
+	s = 256; // secret key range
 	// n elements of the secret key are randomly chosen in range s
 	secretKey.resize(this->n);
 	for (int i = 0;i < this->n;i++) {
@@ -25,8 +25,8 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	this->r_dividedby_L = (double)L_inverse / (double)r_y_inverse;
 	this->s_1_inverse = s_1_inverse; // scaling factor for matrix G
 	this->s_2_inverse = s_2_inverse; // scaling factor for matrix H and J
-	this->U = (int)ceil(U * r_dividedby_L); // range of u
-	logN = ceil(log2(this->U) + log2(r_y_inverse) + log2(s_1_inverse) + log2(s_2_inverse));
+	this->U = U; // range of u
+	logN = ceil(log2(this->U) + log2(L_inverse) + log2(s_1_inverse) + log2(s_2_inverse));
 	N = (unsigned __int64)pow(2, logN); // plaintext modulus
 	logq = logN; // q:=N
 	q = (unsigned __int64)pow(2, logq); // ciphertext modulus

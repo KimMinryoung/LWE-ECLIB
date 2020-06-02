@@ -20,9 +20,9 @@ private:
 	int n;
 	int n_; // ciphertext dimension n_ = n+1
 	double sigma; // standard deviation for Gaussian distribution of noise
+	int s; // secret key range
 
 	RowVectorXu secretKey;
-	unsigned __int64 s; // secret key range !!!!!!!
 
 	int r_y_inverse; // scaling¿ª encrypter∞°??
 	int L_inverse; // signal scaling factor, 1/L

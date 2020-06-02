@@ -27,8 +27,9 @@ Plant::Plant(Sensor* sensor) {
 	T_s = 0.1;
 	// ~~~~~~~~~~
 
-	cout << ">> plant <<" << endl;
 	// You can print plant form or skip
+	/*
+	cout << ">> plant <<" << endl;
 	cout << "x+ = AB * xy" << endl;
 	cout << "y = CD * xy" << endl;
 	printf("plant matrix AB=\n");
@@ -41,7 +42,7 @@ Plant::Plant(Sensor* sensor) {
 	printf("plant initial output y=\n");
 	cout << y << endl;
 	printf("reference signal r=\n");
-	cout << r << endl;
+	cout << r << endl;*/
 }
 
 //----------------------------------------------------------------------------------

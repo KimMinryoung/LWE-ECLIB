@@ -412,24 +412,30 @@ public:
 		double G_norm = GetInfinityNorm(G);
 		double R_norm = GetInfinityNorm(R);
 		double J_norm = GetInfinityNorm(J);
-		while (true) {
-			cout << "degrade:\n" << degrade_bound << endl;
-			double L1 = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse) / ((G_norm + R_norm) / (double)r_y_inverse / 2) * pow(10, degrade_bound);
-			double L2 = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) * pow(10, degrade_bound);
-			double L3 = 2 * DeltaEnc() * pow(10, degrade_bound);
-			L_inverse = pow(2, ceil(log2(max(r_y_inverse, max(max(L1, L2), L3)))));
-			cout << "1/L=" << L_inverse << endl;
-			double alpha_x = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse)  / ((G_norm + R_norm)/ (double)r_y_inverse / 2) / L_inverse;
-			double alpha_u = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) / L_inverse;
-			double alpha_0 = 2 * DeltaEnc() / L_inverse;
-			cout << "alpha_x=" << alpha_x << " alpha_u=" << alpha_u << " alpha_0=" << alpha_0 << endl;
 
-			encdec = new Encrypter(r_y_inverse, s_1_inverse, s_2_inverse, U, L_inverse, sigma, n);
-			if (encdec->Getq() <= 0 || encdec->Getq() > 48)
-				degrade_bound--;
-			else
-				break;
+		cout << "degrade=" << degrade_bound << endl;
+		double L1 = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse) / ((G_norm + R_norm) / (double)r_y_inverse / 2) * pow(10, degrade_bound);
+		double L2 = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) * pow(10, degrade_bound);
+		double L3 = 2 * DeltaEnc() * pow(10, degrade_bound);
+		int logL_inverse = ceil(log2(max(r_y_inverse, max(max(L1, L2), L3))));
+		int logN = ceil(log2(U) + logL_inverse + log2(s_1_inverse) + log2(s_2_inverse));
+		bool adjusted = false;
+		if (logN > 48) {
+			adjusted = true;
+			logL_inverse -= logN - 48;
 		}
+		L_inverse = pow(2, logL_inverse);
+		cout << "log2(1/L)=" << logL_inverse << ", 1/L=" << L_inverse << endl;
+		double alpha_x = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse)  / ((G_norm + R_norm)/ (double)r_y_inverse / 2) / L_inverse;
+		double alpha_u = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) / L_inverse;
+		double alpha_0 = 2 * DeltaEnc() / L_inverse;
+		double alpha = max(max(alpha_x, alpha_u), alpha_0);
+		degrade_bound = log10(1 / alpha);
+		cout << "alpha_x=" << alpha_x << " alpha_u=" << alpha_u << " alpha_0=" << alpha_0 << endl;
+		if(adjusted)
+			cout << "new degrade=" << degrade_bound << endl;
+
+		encdec = new Encrypter(r_y_inverse, s_1_inverse, s_2_inverse, U, L_inverse, sigma, n);
 
 		// building modules and construct system
 		encm_FGR = encdec->Encm(FGR_scaled);
