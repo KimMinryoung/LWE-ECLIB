@@ -18,4 +18,32 @@ For a control system, if the controller is homomorphically encrypted, all the co
 
 Documentation
 
-Implementation and simulation code is in `main.cpp`
+You can immediately start a simulation of control system with `main.cpp`
+
+To put your controller: revise parameters.txt
+
+To put your plant: revise plant parameters and operation codes in Plant.cpp
+
+To fix cryptosystem parameters: revise parameters.txt
+
+## Input file: parameters.txt
+
+ F,G,H,J: state space matrices in following form of controller
+ 
+ x+ = Fx + Gy
+ 
+ u = Hx + Jy
+ 
+ T_s: sampling time(second)
+ 
+ r_y: plant output sensor resolution
+ 
+ r_u: actuator resolution
+ 
+ U: size of controller range
+ 
+ sigma: standard deviation of Gaussian noise
+ 
+ degrade: desired upper bound of performance degradation
+ 
+ (ex: if degrade=1.8, then degradation ratio is under 10^(-1.8)=0.0158)
