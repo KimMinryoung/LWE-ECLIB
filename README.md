@@ -18,32 +18,35 @@ For a control system, if the controller is homomorphically encrypted, all the co
 
 Documentation
 
-You can immediately start a simulation of control system with `main.cpp`
+Open this project with Visual Studio and build an executable file.
 
-To put your controller: revise parameters.txt
+You can immediately start simulation of an example control system with `main.cpp`.
 
-To put your plant: revise plant parameters and operation codes in Plant.cpp
+**To set controller**: Revise parameters.txt.
 
-To fix cryptosystem parameters: revise parameters.txt
+**To set plant**: Revise plant parameters and operation codes in `Plant.cpp`.
+
+**To set cryptosystem**: Revise parameters.txt.
 
 ## Input file: parameters.txt
 
- F,G,H,J: state space matrices in following form of controller
+ These are entries of the input file `parameters.txt`. Each entry in a line should be separated by a tab(\t).
+
+ - F,G,H,J: state space matrices in following form of controller
  
- x+ = Fx + Gy
+ > x(t+1) = Fx(t) + Gy(t),
+ u(t) = Hx(t) + Jy(t).
  
- u = Hx + Jy
+ - T_s: sampling time(second)
  
- T_s: sampling time(second)
+ - r_y: plant output sensor resolution
  
- r_y: plant output sensor resolution
+ - r_u: actuator resolution
  
- r_u: actuator resolution
+ - U: size of controller range
  
- U: size of controller range
+ - sigma: standard deviation of Gaussian noise
  
- sigma: standard deviation of Gaussian noise
- 
- degrade: desired upper bound of performance degradation
+ - degrade: desired upper bound of performance degradation
  
  (ex: if degrade=1.8, then degradation ratio is under 10^(-1.8)=0.0158)
