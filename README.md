@@ -16,21 +16,25 @@ For a control system, if the controller is homomorphically encrypted, all the co
 
 ## How to Use It
 
-Documentation
+Documentation link(currently unavailable)
 
-Open this project with Visual Studio and build an executable file.
+**Windows environment**
+- Open the project solution file `EncryptedSystem.sln` with Visual Studio.
+- To build this project, choose **Build Solution**(`F7`) from the **Build** menu.
+- To run the code, on the menu bar, choose **Debug** -> **Start without debugging**(`Ctrl+F5`).
 
 You can immediately start simulation of an example control system with `main.cpp`.
 
-**To set controller**: Revise parameters.txt.
+**For settings**
+- **To set controller**: Revise `parameters.txt`.
 
-**To set plant**: Revise plant parameters and operation codes in `Plant.cpp`.
+- **To set plant**: Revise plant parameters and operation codes in `Plant.cpp`.
 
-**To set cryptosystem**: Revise parameters.txt.
+- **To set cryptosystem**: Revise `parameters.txt`.
 
 ## Input file: parameters.txt
 
- These are entries of the input file `parameters.txt`. Each entry in a line should be separated by a tab(\t).
+ Following parameters are entries of the input file `parameters.txt`. Each entry in a line should be separated by a tab(\t).
 
  - F,G,H,J: state space matrices in following form of controller
  
