@@ -24,7 +24,7 @@ SystemBuilder::SystemBuilder() {
 	if (point_pos == string::npos)
 		T_s_decimal = 0;
 	else
-		T_s_decimal = line.length() - (point_pos + 1);
+		T_s_decimal = (int)(line.length()) - (point_pos + 1);
 
 	getline(ifs, line, '\n');
 	getline(ifs, line, '\n');

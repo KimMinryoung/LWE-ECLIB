@@ -16,9 +16,9 @@ private:
 	MatrixXu enc_x; // saved controller state x
 	MatrixXu enc_xy; // saved merged matrix of controller state x and plant output y
 	int logq = 48; // default!!??!?!?!?
-	unsigned __int64 q_ = pow(2, logq) - 1;
+	unsigned __int64 q_ = (unsigned __int64)(pow(2, logq)) - 1;
 	const int nu = 16; // base to split a ciphertext(ex: nu = 16 -> split a ciphertext by 2^16)
-	const unsigned __int64 nu_ = pow(2, nu) - 1;
+	const unsigned __int64 nu_ = (unsigned __int64)(pow(2, nu)) - 1;
 	int d = logq / nu; // number of pieces to split
 
 public:

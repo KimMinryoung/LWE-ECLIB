@@ -1,6 +1,6 @@
 #pragma once
 class Encrypter;
-#include "EncryptedController.h";
+#include "EncryptedController.h"
 class Plant;
 class Actuator {
 private:

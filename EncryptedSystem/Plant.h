@@ -1,6 +1,7 @@
 #pragma once
 #include "EncryptedController.h"
 #include "Sensor.h"
+#include <fstream>
 #include <chrono>
 using namespace std::chrono;
 class Plant {
@@ -22,6 +23,9 @@ private:
 	double time_lapsed = 0; // time counter
 	high_resolution_clock::time_point lastTime; // recorded last time point
 	bool receivedContSignal; // set true if received controller signal from actuator
+
+	string writeFilePath = "result.txt"; // output file name or path
+	ofstream ofs; // output file stream
 
 public:
 	Plant(Sensor* sensor);

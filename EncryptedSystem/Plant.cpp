@@ -43,6 +43,13 @@ Plant::Plant(Sensor* sensor) {
 	cout << y << endl;
 	printf("reference signal r=\n");
 	cout << r << endl;*/
+
+	ofs.open(writeFilePath.data(), fstream::out);
+	/*
+	if (!ofs.is_open()) {
+		cout << "No output file" << endl;
+		return;
+	}*/
 }
 
 //----------------------------------------------------------------------------------
@@ -62,10 +69,11 @@ void Plant::GetActuatorSignal(MatrixXd u) {
 
 }
 void Plant::SendOutputToSensor() {
-	if (step % 50 == 1) {
+	if (step % 20 == 1) {
 		cout << "[step " << step << "]" << endl;
 		cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
 		cout << (Substraction(r, y)) << endl;
+		ofs << (T_s*step) << "\t" << r << "\t" << y << "\t" << r - y << endl;
 	}
 	sensor->GetPlantOutput(Substraction(r,y));
 }
@@ -75,6 +83,7 @@ void Plant::ControlLoop(){
 	SendOutputToSensor();
 	time_lapsed = 0;
 	lastTime = high_resolution_clock::now();
+	ofs << "Time(s)" << "\t" << "r" << "\t" << "y" << "\t" << "r - y" << endl;
 	while (true) {
 		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
 		lastTime = high_resolution_clock::now();
