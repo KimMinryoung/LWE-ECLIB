@@ -150,7 +150,7 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	VectorXd b_1(x_row);
 	double b_0;
 
-	// s_1_inverse: scaling factor for controller matrix G and R
+	// s_1_inverse: scaling factor for controller matrices G, R, and J
 	s_1_inverse = pow(10, max(H_precision + G_precision + F_precision, 2 * F_precision + J_precision));
 	// s_2_inverse: scaling factor for controller matrices H and J
 	s_2_inverse = pow(10, J_precision);

@@ -27,7 +27,7 @@ private:
 	int r_y_inverse; // scaling¿ª encrypter∞°??
 	int L_inverse; // signal scaling factor, 1/L
 	double r_dividedby_L; // r/L
-	int s_1_inverse; // matrix(G, R) scaling factor, 1/s_1
+	int s_1_inverse; // matrix(G, R, J) scaling factor, 1/s_1
 	int s_2_inverse; // matrix(H, J) scaling factor, 1/s_2
 	int U; // range size of controller output u
 	int nu; // range size of controller output u
