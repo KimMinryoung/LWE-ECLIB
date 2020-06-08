@@ -16,7 +16,7 @@ For a control system, if the controller is homomorphically encrypted, all the co
 
 ## How to Use It
 
-Documentation link(currently unavailable)
+[**Documentation link**](https://github.com/KimMinryoung/Controller-Encryption/raw/master/Instruction_Manual_of_HECS.pdf)
 
 **Windows environment**
 - Open the project solution file `EncryptedSystem.sln` with Visual Studio.
