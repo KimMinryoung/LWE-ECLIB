@@ -4,7 +4,7 @@ A C++ implementation for linear controllers to operate over encrypted data, usin
 
 ## Documentation
 
-[**Download Instruction Guide**](https://github.com/KimMinryoung/Controller-Encryption/raw/master/Instruction_Manual_of_HECS.pdf)
+[**Download Instruction Guide**](https://github.com/KimMinryoung/ECLIB/raw/master/Instruction_Manual_for_ECLIB.pdf)
 
 ## Overview
 
@@ -16,7 +16,7 @@ The main goal of this library is to give designers an easy way to implement an e
 
 The structure of the control system that **ECLIB** will construct is depicted in the next image.
 
-<img src="https://github.com/KimMinryoung/Controller-Encryption/blob/master/controlsystem_eng.png"></img>
+<img src="https://github.com/KimMinryoung/ECLIB/blob/master/controlsystem_eng.png"></img>
 
 This library is composed of **three main modules**.
 - `Encrypter`: Encrypt signals(and also encrypt controller matrices while building system)
@@ -33,7 +33,7 @@ Also, to help system implementation and test simulation, **ECLIB** provides **au
 
 ## How to Use It
 
-[**Download Instruction Guide**](https://github.com/KimMinryoung/Controller-Encryption/raw/master/Instruction_Manual_of_HECS.pdf)
+[**Download Instruction Guide**](https://github.com/KimMinryoung/ECLIB/raw/master/Instruction_Manual_for_ECLIB.pdf)
 
 ### Building a simulation
 
