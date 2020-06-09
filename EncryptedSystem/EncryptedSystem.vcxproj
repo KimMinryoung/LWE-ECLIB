@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actuator.h" />
+    <ClInclude Include="Decrypter.h" />
     <ClInclude Include="EncryptedController.h" />
     <ClInclude Include="Encrypter.h" />
     <ClInclude Include="Plant.h" />
@@ -174,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actuator.cpp" />
+    <ClCompile Include="Decrypter.cpp" />
     <ClCompile Include="EncryptedController.cpp" />
     <ClCompile Include="Encrypter.cpp" />
     <ClCompile Include="main.cpp" />

@@ -224,10 +224,11 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 
 	// temporal system for computing time simulation
 	encdec = new Encrypter(r_y_inverse, s_1_inverse, s_2_inverse, U, r_y_inverse, sigma, -1);
+	Decrypter* tempDec = encdec->GenerateDecrypter();
 	MatrixXu encm_FGR = encdec->Encm(FGR_scaled);
 	MatrixXu encm_HJ = encdec->Encm(HJ_scaled);
 	MatrixXu enc_x_init_con = encdec->Enc(x_init_con, false);
-	Actuator* tempAct = new Actuator(encdec);
+	Actuator* tempAct = new Actuator(tempDec, encdec);
 	EncryptedController* tempController = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, encdec->Getq(), tempAct);
 	Sensor* tempSensor = new Sensor(tempController, encdec);
 	Plant* tempPlant = new Plant(tempSensor);
@@ -266,17 +267,14 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 		cout << "new degrade=" << degrade_bound << endl;
 
 	encdec = new Encrypter(r_y_inverse, s_1_inverse, s_2_inverse, U, L_inverse, sigma, n);
+	Decrypter* dec = encdec->GenerateDecrypter();
 
 	// building modules and construct system
 	encm_FGR = encdec->Encm(FGR_scaled);
 	encm_HJ = encdec->Encm(HJ_scaled);
 	enc_x_init_con = encdec->Enc(x_init_con_scaled, true);
-	Actuator* actuator = new Actuator(encdec);
+	Actuator* actuator = new Actuator(dec, encdec);
 	controller = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, encdec->Getq(), actuator);
-
-	/*
-	originalController = new ConvertedController(FGR, HJ, x_init_con);
-	quantizedController = new QuantizedController(FGR_scaled, HJ_scaled, x_init_con_scaled, r_y_inverse, s_1_inverse, s_2_inverse);*/
 
 	Sensor* sensor = new Sensor(controller, encdec);
 	plant = new Plant(sensor);

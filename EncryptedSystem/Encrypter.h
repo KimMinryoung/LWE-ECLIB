@@ -4,6 +4,7 @@
 using namespace std;
 #include <random>
 #include <time.h>
+#include "Decrypter.h"
 
 #include "Eigen-3.3.7/Eigen/Dense"
 using Eigen::MatrixXd;
@@ -37,7 +38,6 @@ private:
 	unsigned __int64 q_dividedby_N; // q/N
 	unsigned __int64 nu_; // nu + 1(used for bitwise operation that substitutes modular operation)
 	unsigned __int64 q_; // q + 1
-	unsigned __int64 N_; // N + 1
 
 public:
 	//----------------------------------------------------------------------------------
@@ -52,23 +52,13 @@ public:
 	*/
 	int Set_n(double currentTimeSpan, double T_s);
 	/**
+	* generate a decrypter and return it
+	*/
+	Decrypter* GenerateDecrypter();
+	/**
 	* estimate and print security level lambda decided by Encrypter parameters(q, n, sigma)
 	*/
 	void PrintSecurityLevel();
-	//----------------------------------------------------------------------------------
-	//   DECRYPTION
-	//----------------------------------------------------------------------------------
-	/**
-	* decrypt a ciphertext matrix and rescale
-	* @param MatrixXu c: a ciphertext matrix which was encrypted by Enc function
-	*/
-	MatrixXd Dec(MatrixXu c, unsigned __int64 scaling, bool signal);
-	// decrypt a non-scaled matrix(not used for control system)
-	MatrixXd Dec(MatrixXu c);
-	// decrypt a control signal and rescale
-	MatrixXd Dec_u(MatrixXu c);
-	// decrypt a control state and rescale
-	MatrixXd Dec_state(MatrixXu x);
 	//----------------------------------------------------------------------------------
 	//   ENCRYPTION
 	//----------------------------------------------------------------------------------

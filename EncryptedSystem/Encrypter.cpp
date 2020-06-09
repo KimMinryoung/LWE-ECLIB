@@ -46,7 +46,6 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 
 	q_dividedby_N = pow(2, logq - logN);
 	q_ = q - 1; // q_ and N_ are for bitwise operations which substitutes modulus operations
-	N_ = N - 1;
 	nu_ = (unsigned __int64)pow(2, nu) - 1;
 }
 int Encrypter::Set_n(double currentTimeSpan, double T_s) {
@@ -67,6 +66,10 @@ int Encrypter::Set_n(double currentTimeSpan, double T_s) {
 	}
 	return n;
 }
+Decrypter* Encrypter::GenerateDecrypter() {
+	Decrypter* decrypter = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, logq, n);
+	return decrypter;
+}
 void Encrypter::PrintSecurityLevel() {
 	if (n <= 500) {
 		security_level = 25.094 * pow(n, 0.0503);
@@ -76,38 +79,6 @@ void Encrypter::PrintSecurityLevel() {
 	}
 	cout << "security level: rop=2^" << security_level << endl;
 	printf("---------------\n");
-}
-MatrixXd Encrypter::Dec(MatrixXu c, unsigned __int64 scaling, bool signal) {
-	int l = c.rows() / n_;
-	MatrixXd y(l, c.cols());
-
-	for (int j = 0;j < c.cols();j++) {
-		for (int i = 0;i < l;i++) {
-			unsigned __int64 temp = c(i*n_, j);
-			for (int k = 0;k < n;k++) {
-				temp += secretKey(k) * c(i*n_ + k + 1, j);
-			}
-			unsigned __int64 m = temp & N_;
-			signed __int64 real_m = m - (m >= N / 2) * N;
-			if (signal)
-				y(i, j) = (double)real_m / (double)L_inverse / (double)scaling;
-			else
-				y(i, j) = (double)real_m / (double)r_y_inverse / (double)scaling;
-		}
-	}
-	return y;
-}
-// Decrypt a non-scaled matrix(not used for control system)
-MatrixXd Encrypter::Dec(MatrixXu c) {
-	return Dec(c, 1, false);
-}
-// Decrypt controller output and auto-rescale
-MatrixXd Encrypter::Dec_u(MatrixXu c) {
-	return Dec(c, s_1_inverse*s_2_inverse, true);
-}
-// Decrypt controller state and auto-rescale
-MatrixXd Encrypter::Dec_state(MatrixXu x) {
-	return Dec(x, s_1_inverse, true);
 }
 
 MatrixXu Encrypter::Enc(MatrixXd m, bool signal) {

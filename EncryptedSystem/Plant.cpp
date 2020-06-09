@@ -45,11 +45,6 @@ Plant::Plant(Sensor* sensor) {
 	cout << r << endl;*/
 
 	ofs.open(writeFilePath.data(), fstream::out);
-	/*
-	if (!ofs.is_open()) {
-		cout << "No output file" << endl;
-		return;
-	}*/
 }
 
 //----------------------------------------------------------------------------------
