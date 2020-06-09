@@ -2,13 +2,17 @@
 
 A C++ implementation for linear controllers to operate over encrypted data, using LWE-based cryptosystem.
 
+## Documentation
+
+[**Download Instruction Guide**](https://github.com/KimMinryoung/Controller-Encryption/raw/master/Instruction_Manual_of_HECS.pdf)
+
 ## Overview
 
 **ECLIB** library provides modules for encrypted controller.
 
-The main goal of this library is to give designers an easy way to implement an encrypted control system from their original linear SISO controller and simulate its performance.
+The main goal of this library is to give designers an easy way to implement an encrypted controller from their original linear SISO controller and simulate its performance.
 
-Homomorphic Encryption refers to a type of encryption technology that allows computation to be directly on encrypted data, without requiring any decryption in the process. For a control system, if the controller is homomorphically encrypted, all the control operations are performed in encrypted state. So the controller doesn't have to know the secret key and plaintext of signals, thus the system attacker can't get informantion from controller access.
+**LWE-based cryptosystem** allows homomorphic encryption and arithmetics. **Homomorphic Encryption** refers to a type of encryption technology that allows computation to be directly on encrypted data, without requiring any decryption in the process. For a control system, if the controller is homomorphically encrypted, all the control operations are performed in encrypted state. So the controller doesn't have to know the secret key and plaintext of signals, thus the system attacker can't get informantion from controller access.
 
 <img src="https://github.com/KimMinryoung/Controller-Encryption/blob/master/controlsystem_eng.png"></img>
 
@@ -49,29 +53,31 @@ If you want to change the simulation model, please edit the corresponding files.
 
 ### Implementing a real physical control system
 
+There are codes of modules in \textbf{ECLIB} project folder. You can put them in your project or physical device by including each header file(.h) and source file(.cpp).
 
-
-## Input file: parameters.txt
+## Input File: parameters.txt
 
  Following parameters are entries of the input file `parameters.txt`. Each entry in a line should be separated by a tab(\t).
 
- - F,G,H,J: state space matrices in following form of controller
+**Controller Parameters**
+ - **F,G,H,J**: state space matrices in following form of controller
  
- > x(t+1) = Fx(t) + Gy(t),
- u(t) = Hx(t) + Jy(t).
+ > x(t+1) = Fx(t) + Gy(t), 
+  u(t) = Hx(t) + Jy(t).
  
- - T_s: sampling time(second)
+ (x: controller state, u: controller output, y: plant output)
  
- - r_y: plant output sensor resolution
+ - **T_s**: sampling time(second)
  
- - r_u: actuator resolution
+ - **r_y**: resolution of plant output sensor(e.g. if y=1.46, then 1/r_y=100)
  
- - U: size of controller range
+ - **r_u**: resolution of actuator(e.g. if u=4.821, then 1/r_u=1000)
  
- - sigma: standard deviation of Gaussian noise
+ - **U**: size bound of controller output(e.g. if possible output of controller range from -32 to 17, then U=32)
  
- - degrade: desired upper bound of performance degradation
+ - **sigma**: standard deviation of Gaussian noise to inject to the ciphertext **(highly recommend 1.0 as value)**
  
- (ex: if degrade=1.8, then degradation ratio is under 10^(-1.8)=0.0158)
+ - **degrade_bound**: desired upper bound of performance degradation ratio due to injected noise **(recommend 0.01 as value)**
+(e.g. if degrade_bound=0.05, then degradation ratio will be under 5%)
 
-[**Download Instruction Guide**](https://github.com/KimMinryoung/Controller-Encryption/raw/master/Instruction_Manual_of_HECS.pdf)
+## Output File: result.txt
