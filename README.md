@@ -8,11 +8,13 @@ A C++ implementation for linear controllers to operate over encrypted data, usin
 
 ## Overview
 
-**ECLIB** library provides modules for encrypted controller.
+**ECLIB** provides modules for encrypted controller.
 
-The main goal of this library is to give designers an easy way to implement an encrypted controller from their original linear SISO controller and simulate its performance.
+The main goal of this library is to give designers an easy way to implement an encrypted controller from their original linear SISO controller and simulate its performance. **ECLIB** decides proper parameters to satisfy user's desired performance, and build cryptosystem and encrypted controller according to the parameters.
 
 **LWE-based cryptosystem** allows homomorphic encryption and arithmetics. **Homomorphic Encryption** refers to a type of encryption technology that allows computation to be directly on encrypted data, without requiring any decryption in the process. For a control system, if the controller is homomorphically encrypted, all the control operations are performed in encrypted state. So the controller doesn't have to know the secret key and plaintext of signals, thus the system attacker can't get informantion from controller access.
+
+The structure of the control system that **ECLIB** will construct is depicted in the next image.
 
 <img src="https://github.com/KimMinryoung/Controller-Encryption/blob/master/controlsystem_eng.png"></img>
 
@@ -23,7 +25,7 @@ This library is composed of **three main modules**.
 
 You can embed these modules into your devices to implement an encrypted controller.
 
-Also, to help system implementation and test simulation, **ECLIB** provides auxiliary modules.
+Also, to help system implementation and test simulation, **ECLIB** provides **auxiliary modules**.
 - `System Builder`: With user input, decide proper parameters for system and build it.
 - `Plant`: Receives signal from actuator, updates plant state with the signal, and sends the plant output to the sensor.
 - `Sensor`: Receives the plant output signal, encrypts it, and then sends it to the encrypted controller.
@@ -53,7 +55,9 @@ If you want to change the simulation model, please edit the corresponding files.
 
 ### Implementing a real physical control system
 
-There are codes of modules in \textbf{ECLIB} project folder. You can put them in your project or physical device by including each header file(.h) and source file(.cpp).
+There are codes of modules in **ECLIB** project folder. You can put them in your project or physical device by including each header file(.h) and source file(.cpp).
+
+Please read the guide documentation above for detailed instructions. You can also refer to the virtual code for plant, sensor, and actuator.
 
 ## Input File: parameters.txt
 
@@ -79,5 +83,3 @@ There are codes of modules in \textbf{ECLIB} project folder. You can put them in
  
  - **degrade_bound**: desired upper bound of performance degradation ratio due to injected noise **(recommend 0.01 as value)**
 (e.g. if degrade_bound=0.05, then degradation ratio will be under 5%)
-
-## Output File: result.txt
