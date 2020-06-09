@@ -24,7 +24,7 @@ private:
 	int U;
 	int L_inverse;
 	double sigma = 1;
-	double degrade_bound = 3;
+	double degrade_bound = 0.01;
 	double T_s;
 	Plant* plant;
 	EncryptedController *controller;
