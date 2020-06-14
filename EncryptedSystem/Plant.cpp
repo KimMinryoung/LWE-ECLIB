@@ -17,10 +17,14 @@ Plant::Plant(Sensor* sensor) {
 	MatrixXd x_(3, 1);
 	x_ << 100, 70, 50;
 	x = x_;
+	x_prime = x;
+	x_quan = x;
 	// ~~~~~~~~~~
 	MatrixXd y_(1, 1);
 	y_ << 0;
 	y = y_;
+	y_prime = y;
+	y_quan = y;
 	MatrixXd r_(1, 1);
 	r_ << 25.75;
 	r = r_;
@@ -62,13 +66,30 @@ void Plant::GetActuatorSignal(MatrixXd u) {
 	y = CD * xu;
 	// ~~~~~~~~~~~
 
+	if (originalController != nullptr) {
+		u_prime = originalController->GetOutput(Substraction(r, y_prime));
+		originalController->UpdateState(u_prime);
+		MatrixXd xu_prime = MergeByRow(x_prime, u_prime);
+		x_prime = AB * xu_prime;
+		xu_prime = MergeByRow(x_prime, u);
+		y_prime = CD * xu_prime;
+	}
+
+	if (quantizedController != nullptr) {
+		u_quan = quantizedController->GetOutput(Substraction(r, y_quan));
+		quantizedController->UpdateState(u_quan);
+		MatrixXd xu_quan = MergeByRow(x_quan, u_quan);
+		x_quan = AB * xu_quan;
+		xu_quan = MergeByRow(x_quan, u);
+		y_quan = CD * xu_quan;
+	}
 }
 void Plant::SendOutputToSensor() {
 	if (step % 10 == 1) {
 		cout << "[step " << step << "]" << endl;
 		cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
 		cout << (Substraction(r, y)) << endl;
-		ofs << (T_s*step) << "\t" << r << "\t" << y << "\t" << r - y << endl;
+		ofs << (T_s*step) << "\t" << r << "\t" << y << "\t" << r - y << "\t" << y_quan - y_prime << "\t" << y - y_prime << endl;
 	}
 	sensor->GetPlantOutput(Substraction(r,y));
 }
@@ -78,7 +99,7 @@ void Plant::ControlLoop(){
 	SendOutputToSensor();
 	time_lapsed = 0;
 	lastTime = high_resolution_clock::now();
-	ofs << "Time(s)" << "\t" << "r" << "\t" << "y" << "\t" << "r - y" << endl;
+	ofs << "Time(s)" << "\t" << "r" << "\t" << "y" << "\t" << "r - y" << "\t" << y_quan - y_prime << "\t" << y - y_prime << endl;
 	while (true) {
 		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
 		lastTime = high_resolution_clock::now();

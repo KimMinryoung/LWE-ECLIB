@@ -1,4 +1,5 @@
 #include "SystemBuilder.h"
+#include "Plant.h"
 
 SystemBuilder::SystemBuilder() {
 	ifs.open(filePath.data());
@@ -283,6 +284,9 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	plant = new Plant(sensor);
 	actuator->SetPlant(plant);
 	actuator->SetController(controller);
+
+	plant->originalController = new ConvertedController(FGR, HJ, x_init_con);
+	plant->quantizedController = new QuantizedController(FGR_scaled, HJ_scaled, x_init_con_scaled, r_y_inverse, r_u_inverse, s_1_inverse, s_2_inverse);
 }
 
 void SystemBuilder::ControlLoop() {
