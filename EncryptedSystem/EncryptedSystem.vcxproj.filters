@@ -39,6 +39,9 @@
     <ClInclude Include="SystemBuilder.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Decrypter.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +66,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SystemBuilder.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Decrypter.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
