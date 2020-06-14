@@ -50,7 +50,7 @@ public:
 	* @param double T_s: sampling time of this controller
 	* @param[out] int n: proper n to satisfy time constraint
 	*/
-	int Set_n(double currentTimeSpan, double T_s);
+	int Set_n(double currentTimeSpan, double T_s, double bandwidth);
 	/**
 	* generate a decrypter and return it
 	*/

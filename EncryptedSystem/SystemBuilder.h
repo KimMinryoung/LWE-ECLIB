@@ -23,6 +23,7 @@ private:
 	int r_u_inverse;
 	int U;
 	int L_inverse;
+	double bandwidth; // data bandwidth of network(Mbit/s)
 	double sigma = 1;
 	double degrade_bound = 0.01;
 	double T_s;

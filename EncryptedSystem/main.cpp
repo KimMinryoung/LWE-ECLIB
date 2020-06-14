@@ -100,7 +100,7 @@ public:
 
 //---------TEST CODE FOR SIMPLE LWE OPERATION--------------
 void LWECheck() {
-	Encrypter *enc = new Encrypter(1000, 1, 1, 10000, 1000, 3, 1);
+	Encrypter *enc = new Encrypter(1000, 1, 1, 10000, 10000000, 1, 3);
 	Decrypter *dec = enc->GenerateDecrypter();
 
 	MatrixXd A(2, 3);
@@ -119,8 +119,8 @@ void LWECheck() {
 	MatrixXu B_enc = enc->Enc(B, false);
 	MatrixXu A_enc_mult_scalar = enc->ScalarMult(3, A_enc);
 	MatrixXu A_enc_add_B_enc = enc->Add(A_enc, B_enc);
-	//cout << "Enc(A):\n";
-	//cout << (A_enc) << endl;
+	cout << "Enc(A):\n";
+	cout << (A_enc) << endl;
 	MatrixXd dec1 = dec->Dec(A_enc);
 	cout << "Dec(Enc(A)):\n";
 	cout << (dec1) << endl;

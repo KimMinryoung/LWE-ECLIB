@@ -48,9 +48,14 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	q_ = q - 1; // q_ and N_ are for bitwise operations which substitutes modulus operations
 	nu_ = (unsigned __int64)pow(2, nu) - 1;
 }
-int Encrypter::Set_n(double currentTimeSpan, double T_s) {
+int Encrypter::Set_n(double currentTimeSpan, double T_s, double bandwidth) {
 	std::cout << "Time span test(by n=" << n << ") result: " << currentTimeSpan << " seconds" << endl;
-	n_ = (int)floor(n_ * sqrt(T_s / 2 / max(0.0000001, currentTimeSpan)));
+	// to solve inequality a(n+1)^2 + b(n+1) + c <= 0
+	double a = currentTimeSpan / (n_) / (n_);
+	double b = 4 * 64 / bandwidth * pow(10, -6);
+	double c = -0.9 * T_s;
+	n_ = (-b + sqrt(b*b - 4 * a*c)) / (2 * a);
+	cout << n_ << endl;
 	n = n_ - 1;
 	if (n < 1) {
 		cout << "Impossible to implement since T_s is too small" << endl;

@@ -39,6 +39,9 @@ SystemBuilder::SystemBuilder() {
 	U = stoi(token);
 	getline(ifs, line, '\n');
 	getline(ifs, line, '\n');
+	bandwidth = stod(line);
+	getline(ifs, line, '\n');
+	getline(ifs, line, '\n');
 	pos = line.find('\t');
 	token = line.substr(0, pos);
 	sigma = stod(token);
@@ -234,7 +237,7 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	Plant* tempPlant = new Plant(tempSensor);
 	tempAct->SetPlant(tempPlant);
 	tempAct->SetController(tempController);
-	int n = encdec->Set_n(tempPlant->ControlTimeTest(), T_s);
+	int n = encdec->Set_n(tempPlant->ControlTimeTest(), T_s, bandwidth);
 	// -> proper n(ciphertext dimension) to satisfy computing time constraint
 
 	cout << "delta_Enc: " << DeltaEnc() << " delta_Mult: " << DeltaMult(n) << endl;

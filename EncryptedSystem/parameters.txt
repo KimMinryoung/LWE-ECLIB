@@ -12,5 +12,7 @@ T_s
 0.1
 1/r_y and 1/r_u and U
 1000	1000	16000
+bandwidth(Mbit/s)
+10000
 sigma(stddev of noise) and degrade_bound
 1	0.01
