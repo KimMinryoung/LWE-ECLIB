@@ -249,8 +249,8 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	double J_norm = GetInfinityNorm(J);
 
 	cout << "degrade=" << degrade_bound << endl;
-	double L1 = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse) / ((G_norm + R_norm) / (double)r_y_inverse / 2) / degrade_bound;
-	double L2 = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) / degrade_bound;
+	double L1 = ((G_norm + R_norm) * DeltaEnc() + (double)(x_row + y_row + u_row) * DeltaMult(n) / (double)s_1_inverse) / ((G_norm + R_norm) / (double)r_y_inverse / 2) / degrade_bound;
+	double L2 = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (double)(J_norm / (double)(2 * r_y_inverse) + (double)1 / (double)(2 * r_u_inverse)) / degrade_bound;
 	double L3 = 2 * DeltaEnc() / degrade_bound;
 	int logL_inverse = ceil(log2(fmax(r_y_inverse, fmax(fmax(L1, L2), L3))));
 	int logN = ceil(log2(U) + logL_inverse + log2(s_1_inverse) + log2(s_2_inverse));
@@ -261,12 +261,20 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	}
 	L_inverse = pow(2, logL_inverse);
 	cout << "log2(1/L)=" << logL_inverse << ", 1/L=" << L_inverse << endl;
-	double alpha_x = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse) / ((G_norm + R_norm) / (double)r_y_inverse / 2) / L_inverse;
-	double alpha_u = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) / L_inverse;
-	double alpha_0 = 2 * DeltaEnc() / L_inverse;
-	double alpha = max(max(alpha_x, alpha_u), alpha_0);
-	degrade_bound = alpha;
+	double alpha_x = (G_norm + R_norm) / (double)r_y_inverse / 2;
+	double alpha_u =  J_norm / (2 * r_y_inverse) + (double)1 / (double)(2 * r_u_inverse);
+	double alpha_0 = (double)1 / (double)(2 * s_1_inverse);
 	cout << "alpha_x=" << alpha_x << " alpha_u=" << alpha_u << " alpha_0=" << alpha_0 << endl;
+	double beta_x = alpha_x + ((G_norm + R_norm) * DeltaEnc() + (double)(x_row + y_row + u_row) * DeltaMult(n) / (double)s_1_inverse) / (double)L_inverse;
+	double beta_u = alpha_u + (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (double)L_inverse;
+	double beta_0 = alpha_0 + DeltaEnc() / (double)L_inverse / (double)s_1_inverse;
+	cout << "beta_x=" << beta_x << " beta_u=" << beta_u << " beta_0=" << beta_0 << endl;
+	double diff_x = ((G_norm + R_norm) * DeltaEnc() + (x_row + y_row + u_row) * DeltaMult(n) / s_1_inverse) / ((G_norm + R_norm) / (double)r_y_inverse / 2) / L_inverse;
+	double diff_u = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (J_norm / (2 * r_y_inverse) + 1 / (2 * r_u_inverse)) / L_inverse;
+	double diff_0 = 2 * DeltaEnc() / L_inverse;
+	double diff = max(max(diff_x, diff_u), diff_0);
+	degrade_bound = diff;
+	cout << "diff_x=" << diff_x << " diff_u=" << diff_u << " diff_0=" << diff_0 << endl;
 	if (adjusted)
 		cout << "new degrade=" << degrade_bound << endl;
 

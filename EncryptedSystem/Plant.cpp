@@ -99,7 +99,7 @@ void Plant::ControlLoop(){
 	SendOutputToSensor();
 	time_lapsed = 0;
 	lastTime = high_resolution_clock::now();
-	ofs << "Time(s)" << "\t" << "r" << "\t" << "y" << "\t" << "r - y" << "\t" << y_quan - y_prime << "\t" << y - y_prime << endl;
+	ofs << "Time(s)" << "\t" << "r" << "\t" << "y" << "\t" << "r - y" << "\t" << "y_quan - y_prime" << "\t" << "y - y_prime" << endl;
 	while (true) {
 		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
 		lastTime = high_resolution_clock::now();
