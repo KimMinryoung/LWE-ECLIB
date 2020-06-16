@@ -41,8 +41,8 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 		cout << "parameters for quantization:" << endl;
 		cout << "1/L=" << L_inverse << ", 1/s_1=" << s_1_inverse << ", 1/s_2=" << s_2_inverse << ", 1/r_y=" << r_y_inverse << ", U=" << U << endl;
 		printf("---------------\n");
+		PrintSecurityLevel();
 	}
-	PrintSecurityLevel();
 
 	q_dividedby_N = pow(2, logq - logN);
 	q_ = q - 1; // q_ and N_ are for bitwise operations which substitutes modulus operations
@@ -55,7 +55,6 @@ int Encrypter::Set_n(double currentTimeSpan, double T_s, double bandwidth) {
 	double b = 4 * 64 / bandwidth * pow(10, -6);
 	double c = -0.9 * T_s;
 	n_ = (-b + sqrt(b*b - 4 * a*c)) / (2 * a);
-	cout << n_ << endl;
 	n = n_ - 1;
 	if (n < 1) {
 		cout << "Impossible to implement since T_s is too small" << endl;
