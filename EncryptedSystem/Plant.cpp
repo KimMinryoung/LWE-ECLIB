@@ -87,7 +87,7 @@ void Plant::GetActuatorSignal(MatrixXd u) {
 void Plant::SendOutputToSensor() {
 	if (step % 10 == 1) {
 		cout << "[step " << step << "]" << endl;
-		cout << "r - y=\t\t(reference signal vs.encrypted system)" << endl;
+		cout << "r - y=\t\t(reference signal vs.plant output)" << endl;
 		cout << (Substraction(r, y)) << endl;
 		ofs << (T_s*step) << "\t" << r << "\t" << y << "\t" << r - y << "\t" << y_quan - y_prime << "\t" << y - y_prime << endl;
 	}

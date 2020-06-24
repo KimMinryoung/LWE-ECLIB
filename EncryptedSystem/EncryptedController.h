@@ -15,7 +15,7 @@ private:
 	MatrixXu encm_HJ; // encrypted matrix HJ
 	MatrixXu enc_x; // saved controller state x
 	MatrixXu enc_xy; // saved merged matrix of controller state x and plant output y
-	int logq = 48; // default!!??!?!?!?
+	int logq; // log2 of cipherspace size
 	unsigned __int64 q_ = (unsigned __int64)(pow(2, logq)) - 1;
 	const int nu = 16; // base to split a ciphertext(ex: nu = 16 -> split a ciphertext by 2^16)
 	const unsigned __int64 nu_ = (unsigned __int64)(pow(2, nu)) - 1;
