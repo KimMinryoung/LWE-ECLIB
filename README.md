@@ -48,7 +48,8 @@ You can also refer to the virtual code for plant, sensor, and actuator.
 You can immediately start simulation of an example control system with `main.cpp`.
 
 **Windows environment**
-- Open the project solution file `EncryptedSystem.sln` with Visual Studio(version above 2017).
+- Install **Visual Studio 2019**. In the Installing Visual Studio screen, choose the **Desktop development with C++** workload. We need to set up MSVC v142 toolset to build project.(If you missed that step, you should re-open Visual Studio Installer again, and **modify** Visual Studio 2019. Then you can install workload we need.)
+- Open the project solution file `EncryptedSystem.sln` with Visual Studio 2019.
 - To build this project, choose **Build Solution**(`F7`) from the **Build** menu.
 - To run the code, on the menu bar, choose **Debug** -> **Start without debugging**(`Ctrl+F5`).
 
