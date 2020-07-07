@@ -101,6 +101,10 @@ void Plant::ControlLoop(){
 	lastTime = high_resolution_clock::now();
 	ofs << "Time(s)" << "\t" << "r" << "\t" << "y" << "\t" << "r - y" << "\t" << "y_quan - y_prime" << "\t" << "y - y_prime" << endl;
 	while (true) {
+		if (T_s*step > 60) { // end loop after 60 seconds
+			cout << "Simulation loop ended." << endl;
+			return;
+		}
 		time_lapsed += duration_cast<duration<double>>(high_resolution_clock::now() - lastTime).count();
 		lastTime = high_resolution_clock::now();
 		if (time_lapsed > T_s) {
