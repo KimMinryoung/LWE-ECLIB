@@ -227,18 +227,20 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	MatrixXd x_init_con_scaled = s_1_inverse * x_init_con;
 
 	// temporal system for computing time simulation
-	encdec = new Encrypter(r_y_inverse, s_1_inverse, s_2_inverse, U, r_y_inverse, sigma, -1);
-	Decrypter* tempDec = encdec->GenerateDecrypter();
-	MatrixXu encm_FGR = encdec->Encm(FGR_scaled);
-	MatrixXu encm_HJ = encdec->Encm(HJ_scaled);
-	MatrixXu enc_x_init_con = encdec->Enc(x_init_con, false);
-	Actuator* tempAct = new Actuator(tempDec, encdec);
-	EncryptedController* tempController = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, encdec->Getq(), tempAct);
-	Sensor* tempSensor = new Sensor(tempController, encdec);
+	int temp_n = 100;
+	RowVectorXu tempSecretKey = GenerateSecretKey(temp_n, secretKeyRange);
+	Encrypter* tempEnc = new Encrypter(tempSecretKey, r_y_inverse, s_1_inverse, s_2_inverse, U, r_y_inverse, sigma, temp_n, false);
+	Decrypter* tempDec = new Decrypter(tempSecretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, tempEnc->Get_log_q(), temp_n);
+	MatrixXu encm_FGR = tempEnc->Encm(FGR_scaled);
+	MatrixXu encm_HJ = tempEnc->Encm(HJ_scaled);
+	MatrixXu enc_x_init_con = tempEnc->Enc(x_init_con, false);
+	Actuator* tempAct = new Actuator(tempDec, tempEnc);
+	EncryptedController* tempController = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, tempEnc->Get_log_q(), tempAct);
+	Sensor* tempSensor = new Sensor(tempController, tempEnc);
 	Plant* tempPlant = new Plant(tempSensor);
 	tempAct->SetPlant(tempPlant);
 	tempAct->SetController(tempController);
-	int n = encdec->Set_n(tempPlant->ControlTimeTest(), T_s, bandwidth);
+	int n = Set_n(temp_n, tempPlant->ControlTimeTest());
 	// -> proper n(ciphertext dimension) to satisfy computing time constraint
 
 	cout << "delta_Enc: " << DeltaEnc() << " delta_Mult: " << DeltaMult(n) << endl;
@@ -278,17 +280,18 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	if (adjusted)
 		cout << "new degrade=" << degrade_bound << endl;
 
-	encdec = new Encrypter(r_y_inverse, s_1_inverse, s_2_inverse, U, L_inverse, sigma, n);
-	Decrypter* dec = encdec->GenerateDecrypter();
+	RowVectorXu secretKey = GenerateSecretKey(n, secretKeyRange);
+	encrypter = new Encrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, U, L_inverse, sigma, n, true);
+	Decrypter* decrypter = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, encrypter->Get_log_q(), n);
 
 	// building modules and construct system
-	encm_FGR = encdec->Encm(FGR_scaled);
-	encm_HJ = encdec->Encm(HJ_scaled);
-	enc_x_init_con = encdec->Enc(x_init_con_scaled, true);
-	Actuator* actuator = new Actuator(dec, encdec);
-	controller = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, encdec->Getq(), actuator);
+	encm_FGR = encrypter->Encm(FGR_scaled);
+	encm_HJ = encrypter->Encm(HJ_scaled);
+	enc_x_init_con = encrypter->Enc(x_init_con_scaled, true);
+	Actuator* actuator = new Actuator(decrypter, encrypter);
+	controller = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, encrypter->Get_log_q(), actuator);
 
-	Sensor* sensor = new Sensor(controller, encdec);
+	Sensor* sensor = new Sensor(controller, encrypter);
 	plant = new Plant(sensor);
 	actuator->SetPlant(plant);
 	actuator->SetController(controller);
@@ -330,6 +333,36 @@ double SystemBuilder::DeltaMult(int n) {
 	int nu = 16;
 	return round(d*(n + 1)*2.58*sigma * nu) + 1;
 }
+RowVectorXu SystemBuilder::GenerateSecretKey(int n, int secretKeyRange) {
+	RowVectorXu secretKey;
+	secretKey.resize(n);
+	for (int i = 0;i < n;i++) {
+		secretKey(i) = rand() % secretKeyRange;
+	}
+	return secretKey;
+}
+
+int SystemBuilder::Set_n(int temp_n, double currentTimeSpan) {
+	int n = temp_n;
+	std::cout << "Time span test(by n=" << temp_n << ") result: " << currentTimeSpan << " seconds" << endl;
+	// to solve inequality a(n+1)^2 + b(n+1) + c <= 0
+	int n_ = n + 1;
+	double a = currentTimeSpan / (n_) / (n_);
+	double b = 4 * 64 / bandwidth * pow(10, -6);
+	double c = -0.9 * T_s;
+	n_ = (-b + sqrt(b * b - 4 * a * c)) / (2 * a);
+	n = n_ - 1;
+	if (n < 1) {
+		cout << "Impossible to implement since T_s is too small" << endl;
+		return -1;
+	}
+	else {
+		cout << "new n=" << n << endl;
+		printf("---------------\n");
+	}
+	return n;
+}
+
 int needed_precision;
 MatrixXd SystemBuilder::ReadMatrix(string end) {
 	vector<vector<double>> m_;

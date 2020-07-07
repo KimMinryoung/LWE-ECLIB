@@ -7,6 +7,7 @@
 #include "Actuator.h"
 #include "Sensor.h"
 typedef Eigen::Matrix<double, 2, 1> Vector2d;
+typedef Eigen::Matrix<unsigned __int64, 1, Eigen::Dynamic> RowVectorXu;
 
 class SystemBuilder {
 
@@ -27,9 +28,10 @@ private:
 	double sigma = 1;
 	double degrade_bound = 0.01;
 	double T_s;
+	int secretKeyRange = 256;
 	Plant* plant;
 	EncryptedController *controller;
-	Encrypter *encdec;
+	Encrypter *encrypter;
 
 	string filePath = "parameters.txt";
 	string writeFilePath = "result.txt";
@@ -52,6 +54,15 @@ public:
 	double GetInfinityNorm(MatrixXd m);
 	double DeltaEnc();
 	double DeltaMult(int n);
+	RowVectorXu GenerateSecretKey(int n, int secretKeyRange);
+	/**
+	* decide n(ciphertext dimension) of cryptosystem as large as possible while satisfying the control time constraint and return the n
+	* @param int temp_n: temporal n used for time measuring
+	* @param double currentTimeSpan: total time cost of 1 step control operation and signal communication, with current n(and matrices sizes)
+	* @param[out] int n: proper n to satisfy time constraint
+	*/
+	int Set_n(int temp_n, double currentTimeSpan);
+
 	int needed_precision;
 	MatrixXd ReadMatrix(string end);
 };

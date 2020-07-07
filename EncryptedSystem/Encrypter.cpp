@@ -4,7 +4,7 @@
 static std::random_device rnd;
 static std::mt19937_64 generator(rnd());
 static std::uniform_int_distribution<unsigned __int64> distribution_;
-Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, int L_inverse, double sigma, int n) {
+Encrypter::Encrypter(RowVectorXu secretKey, int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, int L_inverse, double sigma, int n, bool print) {
 	srand(time(NULL));
 
 	if (n == -1)
@@ -12,13 +12,8 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	else
 		this->n = n;
 	this->n_ = this->n + 1;
-
-	s = 256; // secret key range
-	// n elements of the secret key are randomly chosen in range s
-	secretKey.resize(this->n);
-	for (int i = 0;i < this->n;i++) {
-		secretKey(i) = rand() % s;
-	}
+	
+	this->secretKey = secretKey;
 
 	this->r_y_inverse = r_y_inverse; // resolution of controller input signal y
 	this->L_inverse = L_inverse; // scaling factor for signal y
@@ -34,7 +29,7 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	d = (int)ceil((double)logq / nu);
 	this->sigma = sigma;
 
-	if (n != -1) {
+	if (print) {
 		cout << "parameters of the LWE cryptosystem" << endl;
 		cout << "q=N=2^" << logq << ", nu=2^" << nu << ", d=" << d << ",\nn=" << this->n << ", sigma=" << this->sigma << endl;
 		printf("---------------\n");
@@ -47,32 +42,6 @@ Encrypter::Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, i
 	q_dividedby_N = pow(2, logq - logN);
 	q_ = q - 1; // q_ and N_ are for bitwise operations which substitutes modulus operations
 	nu_ = (unsigned __int64)pow(2, nu) - 1;
-}
-int Encrypter::Set_n(double currentTimeSpan, double T_s, double bandwidth) {
-	std::cout << "Time span test(by n=" << n << ") result: " << currentTimeSpan << " seconds" << endl;
-	// to solve inequality a(n+1)^2 + b(n+1) + c <= 0
-	double a = currentTimeSpan / (n_) / (n_);
-	double b = 4 * 64 / bandwidth * pow(10, -6);
-	double c = -0.9 * T_s;
-	n_ = (-b + sqrt(b*b - 4 * a*c)) / (2 * a);
-	n = n_ - 1;
-	if (n < 1) {
-		cout << "Impossible to implement since T_s is too small" << endl;
-		return -1;
-	}
-	else {
-		cout << "new n=" << n << endl;
-		printf("---------------\n");
-		secretKey.resize(n);
-		for (int i = 0;i < n;i++) {
-			secretKey(i) = rand() % s;
-		}
-	}
-	return n;
-}
-Decrypter* Encrypter::GenerateDecrypter() {
-	Decrypter* decrypter = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, logq, n);
-	return decrypter;
 }
 void Encrypter::PrintSecurityLevel() {
 	if (n <= 500) {
@@ -215,6 +184,6 @@ MatrixXu Encrypter::SplitMtx(MatrixXu c) {
 	}
 	return result;
 }
-int Encrypter::Getq() {
+int Encrypter::Get_log_q() {
 	return logq;
 }

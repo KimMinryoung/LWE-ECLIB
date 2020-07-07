@@ -21,10 +21,23 @@ typedef Eigen::Matrix<double, Eigen::Dynamic, 1> VectorXd;
 
 using namespace std;
 
+RowVectorXu GenerateSecretKey(int n, int secretKeyRange) {
+	RowVectorXu secretKey;
+	secretKey.resize(n);
+	for (int i = 0;i < n;i++) {
+		secretKey(i) = rand() % secretKeyRange;
+	}
+	return secretKey;
+}
+
 //---------TEST CODE FOR SIMPLE LWE OPERATION--------------
 void LWECheck() {
-	Encrypter *enc = new Encrypter(1000, 1, 1, 10000, 10000000, 1, 3);
-	Decrypter *dec = enc->GenerateDecrypter();
+	int sigma = 1;
+	int n = 3;
+	int secretKeyRange = 256;
+	RowVectorXu secretKey = GenerateSecretKey(n, secretKeyRange);
+	Encrypter *enc = new Encrypter(secretKey, 1000, 1, 1, 10000, 10000000, sigma, n, true);
+	Decrypter *dec = new Decrypter(secretKey, 1000, 1, 1, 10000000, enc->Get_log_q(), n);
 
 	MatrixXd A(2, 3);
 	A << 1.25, 0.125, -10,
@@ -57,8 +70,12 @@ void LWECheck() {
 
 //------TEST CODE FOR SIMPLE GSW MULTIPLICATION(ciphertext multiplied by ciphertext) OPERATION-------
 void GSWCheck() {
-	Encrypter *enc = new Encrypter(100, 1, 1, 8000, 1000, 3, 1);
-	Decrypter *dec = enc->GenerateDecrypter();
+	int sigma = 1;
+	int n = 1;
+	int secretKeyRange = 256;
+	RowVectorXu secretKey = GenerateSecretKey(n, secretKeyRange);
+	Encrypter *enc = new Encrypter(secretKey, 100, 1, 1, 8000, 1000, sigma, n, true);
+	Decrypter *dec = new Decrypter(secretKey, 100, 1, 1, 1000, enc->Get_log_q(), n);
 
 	int FG_row = 2;
 	int FG_col = 3;

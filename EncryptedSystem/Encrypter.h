@@ -4,7 +4,6 @@
 using namespace std;
 #include <random>
 #include <time.h>
-#include "Decrypter.h"
 
 #include "Eigen-3.3.7/Eigen/Dense"
 using Eigen::MatrixXd;
@@ -21,7 +20,6 @@ private:
 	int n;
 	int n_; // ciphertext dimension n_ = n+1
 	double sigma; // standard deviation for Gaussian distribution of noise
-	int s; // secret key range
 
 	RowVectorXu secretKey;
 
@@ -43,18 +41,7 @@ public:
 	//----------------------------------------------------------------------------------
 	//   ENCRYPTER CONSTRUCTION
 	//----------------------------------------------------------------------------------
-	Encrypter(int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, int L_inverse, double sigma, int n);
-	/**
-	* decide n as large as possible while satisfying the control time constraint and return the n
-	* @param double currentTimeSpan: total time cost of 1 step control operation and signal communication, with current n(and matrices sizes)
-	* @param double T_s: sampling time of this controller
-	* @param[out] int n: proper n to satisfy time constraint
-	*/
-	int Set_n(double currentTimeSpan, double T_s, double bandwidth);
-	/**
-	* generate a decrypter and return it
-	*/
-	Decrypter* GenerateDecrypter();
+	Encrypter(RowVectorXu secretKey, int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, int L_inverse, double sigma, int n, bool print);
 	/**
 	* estimate and print security level lambda decided by Encrypter parameters(q, n, sigma)
 	*/
@@ -101,6 +88,6 @@ public:
 	/**
 	* return ciphertext space size q
 	*/
-	int Getq();
+	int Get_log_q();
 };
 #endif
