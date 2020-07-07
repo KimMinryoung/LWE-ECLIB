@@ -12,7 +12,7 @@ A C++ implementation for linear controllers to operate over encrypted data, usin
 
 The main goal of this library is to give designers an easy way to implement an encrypted controller from their original linear SISO controller and simulate its performance. **ECLIB** decides proper parameters to satisfy user's desired performance and promise security, and build cryptosystem and encrypted controller according to the parameters.
 
-**LWE-based cryptosystem** allows homomorphic encryption and arithmetics. **Homomorphic Encryption** refers to a type of encryption technology that allows computation to be directly on encrypted data, without requiring any decryption in the process. For a control system, if the controller is homomorphically encrypted, all the control operations are performed in encrypted state. So the controller doesn't have to know the secret key and plaintext of signals, thus the system attacker can't get informantion from controller access.
+**LWE-based cryptosystem** allows homomorphic encryption and arithmetic operations. **Homomorphic Encryption** refers to a type of encryption technology that allows computation to be directly on encrypted data, without requiring any decryption in the process. For a control system, if the controller is homomorphically encrypted, all the control operations are performed in encrypted state. So the controller doesn't have to know the secret key and plaintext of signals, thus the system attacker can't get information from controller access.
 
 The structure of the control system that **ECLIB** will construct is depicted in the next image.
 
@@ -69,7 +69,7 @@ If you want to change the simulation model, please edit the corresponding files.
 **Controller Parameters**
  - **F,G,H,J**: state space matrices in following form of controller
  
- > x(t+1) = Fx(t) + Gy(t), 
+ > x(t+1) = Fx(t) + Gy(t),
   u(t) = Hx(t) + Jy(t).
  
  (x: controller state, u: controller output, y: plant output)
