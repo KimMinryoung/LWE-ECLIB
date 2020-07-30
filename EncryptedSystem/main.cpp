@@ -36,8 +36,15 @@ void LWECheck() {
 	int n = 3;
 	int secretKeyRange = 256;
 	RowVectorXu secretKey = GenerateSecretKey(n, secretKeyRange);
-	Encrypter *enc = new Encrypter(secretKey, 1000, 1, 1, 10000, 10000000, sigma, n, true);
-	Decrypter *dec = new Decrypter(secretKey, 1000, 1, 1, 10000000, enc->Get_log_q(), n);
+	int r_y_inverse = 1000;
+	int U = 10000;
+	unsigned __int64 s_1_inverse = 1;
+	unsigned __int64 s_2_inverse = 1;
+	unsigned __int64 L_inverse = 10000000;
+	int logN = ceil(log2(U) + log2(L_inverse) + log2(s_1_inverse) + log2(s_2_inverse));
+	int logq = logN;
+	Encrypter *enc = new Encrypter(secretKey, logN, logq, r_y_inverse, L_inverse, sigma, n, true);
+	Decrypter *dec = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, logq, n);
 
 	MatrixXd A(2, 3);
 	A << 1.25, 0.125, -10,
@@ -74,8 +81,15 @@ void GSWCheck() {
 	int n = 1;
 	int secretKeyRange = 256;
 	RowVectorXu secretKey = GenerateSecretKey(n, secretKeyRange);
-	Encrypter *enc = new Encrypter(secretKey, 100, 1, 1, 8000, 1000, sigma, n, true);
-	Decrypter *dec = new Decrypter(secretKey, 100, 1, 1, 1000, enc->Get_log_q(), n);
+	int r_y_inverse = 100;
+	int U = 8000;
+	unsigned __int64 s_1_inverse = 1;
+	unsigned __int64 s_2_inverse = 1;
+	unsigned __int64 L_inverse = 1000;
+	int logN = ceil(log2(U) + log2(L_inverse) + log2(s_1_inverse) + log2(s_2_inverse));
+	int logq = logN;
+	Encrypter* enc = new Encrypter(secretKey, logN, logq, r_y_inverse, L_inverse, sigma, n, true);
+	Decrypter* dec = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, logq, n);
 
 	int FG_row = 2;
 	int FG_col = 3;

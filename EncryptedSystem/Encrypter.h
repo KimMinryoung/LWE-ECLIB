@@ -15,7 +15,7 @@ class Encrypter {
 private:
 	unsigned __int64 N; // plaintext modulus
 	unsigned __int64 q; // ciphertext modulus
-	int logN; // logN=log_2(N)
+	int logN; // logN = log_2(N)
 	int logq; // logq = log_2(q)
 	int n;
 	int n_; // ciphertext dimension n_ = n+1
@@ -26,9 +26,6 @@ private:
 	int r_y_inverse; // sensor resolution of signal y, 1/r_y
 	int L_inverse; // signal scaling factor, 1/L
 	double r_dividedby_L; // r/L
-	int s_1_inverse; // matrix(G, R, J) scaling factor, 1/s_1
-	int s_2_inverse; // matrix(H, J) scaling factor, 1/s_2
-	int U; // range size of controller output u
 	int nu; // range size of controller output u
 	int d; // base to split a ciphertext(ex: nu = 16 -> split a ciphertext by 2^16)
 	double security_level; // lambda which represents expected value of needed operations to attack(=log2(NeededOperationNumber))
@@ -41,7 +38,7 @@ public:
 	//----------------------------------------------------------------------------------
 	//   ENCRYPTER CONSTRUCTION
 	//----------------------------------------------------------------------------------
-	Encrypter(RowVectorXu secretKey, int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, int L_inverse, double sigma, int n, bool print);
+	Encrypter(RowVectorXu secretKey, int logN, int logq, int r_y_inverse, int L_inverse, double sigma, int n, bool print);
 	/**
 	* estimate and print security level lambda decided by Encrypter parameters(q, n, sigma)
 	*/
@@ -85,9 +82,5 @@ public:
 	* @param MatrixXu c: a ciphertext matrix to split
 	*/
 	MatrixXu SplitMtx(MatrixXu c);
-	/**
-	* return ciphertext space size q
-	*/
-	int Get_log_q();
 };
 #endif

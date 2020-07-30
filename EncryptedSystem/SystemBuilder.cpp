@@ -229,13 +229,16 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	// temporal system for computing time simulation
 	int temp_n = 100;
 	RowVectorXu tempSecretKey = GenerateSecretKey(temp_n, secretKeyRange);
-	Encrypter* tempEnc = new Encrypter(tempSecretKey, r_y_inverse, s_1_inverse, s_2_inverse, U, r_y_inverse, sigma, temp_n, false);
-	Decrypter* tempDec = new Decrypter(tempSecretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, tempEnc->Get_log_q(), temp_n);
+	int tempL_inverse = r_y_inverse;
+	int logN = ceil(log2(this->U) + log2(tempL_inverse) + log2(s_1_inverse) + log2(s_2_inverse));
+	int logq = logN; // q:=N
+	Encrypter* tempEnc = new Encrypter(tempSecretKey, logN, logq, r_y_inverse, tempL_inverse, sigma, temp_n, false);
+	Decrypter* tempDec = new Decrypter(tempSecretKey, r_y_inverse, s_1_inverse, s_2_inverse, tempL_inverse, logq, temp_n);
 	MatrixXu encm_FGR = tempEnc->Encm(FGR_scaled);
 	MatrixXu encm_HJ = tempEnc->Encm(HJ_scaled);
 	MatrixXu enc_x_init_con = tempEnc->Enc(x_init_con, false);
 	Actuator* tempAct = new Actuator(tempDec, tempEnc);
-	EncryptedController* tempController = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, tempEnc->Get_log_q(), tempAct);
+	EncryptedController* tempController = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, logq, tempAct);
 	Sensor* tempSensor = new Sensor(tempController, tempEnc);
 	Plant* tempPlant = new Plant(tempSensor);
 	tempAct->SetPlant(tempPlant);
@@ -255,7 +258,7 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 	double L2 = (J_norm * DeltaEnc() + (x_row + y_row) * DeltaMult(n) / (double)s_1_inverse / (double)s_2_inverse) / (double)(J_norm / (double)(2 * r_y_inverse) + (double)1 / (double)(2 * r_u_inverse)) / degrade_bound;
 	double L3 = 2 * DeltaEnc() / degrade_bound;
 	int logL_inverse = ceil(log2(fmax(r_y_inverse, fmax(fmax(L1, L2), L3))));
-	int logN = ceil(log2(U) + logL_inverse + log2(s_1_inverse) + log2(s_2_inverse));
+	logN = ceil(log2(U) + logL_inverse + log2(s_1_inverse) + log2(s_2_inverse));
 	bool adjusted = false;
 	if (logN > 48) {
 		adjusted = true;
@@ -281,15 +284,16 @@ void SystemBuilder::BuildController(double T_s, int F_precision, int G_precision
 		cout << "new degrade=" << degrade_bound << endl;
 
 	RowVectorXu secretKey = GenerateSecretKey(n, secretKeyRange);
-	encrypter = new Encrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, U, L_inverse, sigma, n, true);
-	Decrypter* decrypter = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, encrypter->Get_log_q(), n);
+	logq = logN; // q:=N
+	encrypter = new Encrypter(secretKey, logN, logq, r_y_inverse, L_inverse, sigma, n, true);
+	Decrypter* decrypter = new Decrypter(secretKey, r_y_inverse, s_1_inverse, s_2_inverse, L_inverse, logq, n);
 
 	// building modules and construct system
 	encm_FGR = encrypter->Encm(FGR_scaled);
 	encm_HJ = encrypter->Encm(HJ_scaled);
 	enc_x_init_con = encrypter->Enc(x_init_con_scaled, true);
 	Actuator* actuator = new Actuator(decrypter, encrypter);
-	controller = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, encrypter->Get_log_q(), actuator);
+	controller = new EncryptedController(encm_FGR, encm_HJ, enc_x_init_con, logq, actuator);
 
 	Sensor* sensor = new Sensor(controller, encrypter);
 	plant = new Plant(sensor);

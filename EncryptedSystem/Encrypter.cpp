@@ -4,40 +4,38 @@
 static std::random_device rnd;
 static std::mt19937_64 generator(rnd());
 static std::uniform_int_distribution<unsigned __int64> distribution_;
-Encrypter::Encrypter(RowVectorXu secretKey, int r_y_inverse, int s_1_inverse, int s_2_inverse, int U, int L_inverse, double sigma, int n, bool print) {
+Encrypter::Encrypter(RowVectorXu secretKey, int logN, int logq, int r_y_inverse, int L_inverse, double sigma, int n, bool print) {
 	srand(time(NULL));
 
-	if (n == -1)
+	/*if (n == -1)
 		this->n = 100; // temporal ciphertext dimension for speed measuring
 	else
-		this->n = n;
-	this->n_ = this->n + 1;
+		*/this->n = n;
+	this->n_ = n + 1;
 	
 	this->secretKey = secretKey;
 
 	this->r_y_inverse = r_y_inverse; // resolution of controller input signal y
 	this->L_inverse = L_inverse; // scaling factor for signal y
 	this->r_dividedby_L = (double)L_inverse / (double)r_y_inverse;
-	this->s_1_inverse = s_1_inverse; // scaling factor for matrix G
-	this->s_2_inverse = s_2_inverse; // scaling factor for matrix H and J
-	this->U = U; // range of u
-	logN = ceil(log2(this->U) + log2(L_inverse) + log2(s_1_inverse) + log2(s_2_inverse));
+	this->logN = logN;
 	N = (unsigned __int64)pow(2, logN); // plaintext modulus
-	logq = logN; // q:=N
+	this->logq = logq;
 	q = (unsigned __int64)pow(2, logq); // ciphertext modulus
 	nu = 16;
 	d = (int)ceil((double)logq / nu);
 	this->sigma = sigma;
 
-	if (print) {
+	//if (print) {
 		cout << "parameters of the LWE cryptosystem" << endl;
 		cout << "q=N=2^" << logq << ", nu=2^" << nu << ", d=" << d << ",\nn=" << this->n << ", sigma=" << this->sigma << endl;
 		printf("---------------\n");
 		cout << "parameters for quantization:" << endl;
-		cout << "1/L=" << L_inverse << ", 1/s_1=" << s_1_inverse << ", 1/s_2=" << s_2_inverse << ", 1/r_y=" << r_y_inverse << ", U=" << U << endl;
+		cout << "1/L=" << L_inverse << ", 1/r_y=" << r_y_inverse << endl;
+		//cout << "1/L=" << L_inverse << ", 1/s_1=" << s_1_inverse << ", 1/s_2=" << s_2_inverse << ", 1/r_y=" << r_y_inverse << ", U=" << U << endl;
 		printf("---------------\n");
 		PrintSecurityLevel();
-	}
+	//}
 
 	q_dividedby_N = pow(2, logq - logN);
 	q_ = q - 1; // q_ and N_ are for bitwise operations which substitutes modulus operations
@@ -183,7 +181,4 @@ MatrixXu Encrypter::SplitMtx(MatrixXu c) {
 		}
 	}
 	return result;
-}
-int Encrypter::Get_log_q() {
-	return logq;
 }
